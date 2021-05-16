@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>关于MarkDownd的一点点复杂的用法</title>
+      <link href="2021/05/14/MarkDown/MarkDowmHelp/"/>
+      <url>2021/05/14/MarkDown/MarkDowmHelp/</url>
+      
+        <content type="html"><![CDATA[<h2 id="bmarkdown的用法和参考"><a class="markdownIt-Anchor" href="#bmarkdown的用法和参考"></a> <b>MarkDown的用法和参考</h2><blockquote><p><a href="https://segmentfault.com/markdown#articleHeader9">帮助</a><br /><a href="https://www.runoob.com/markdown/md-tutorial.html">帮助2</a></p></blockquote><hr /><ul><li>Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档。</li><li>Markdown 语言在 2004 由约翰·格鲁伯（英语：John Gruber）创建。</li><li>Markdown 编写的文档可以导出 HTML 、Word、图像、PDF、Epub 等多种格式的文档。</li><li>Markdown 编写的文档后缀为 .md, .markdown。</li></ul><span id="more"></span><h3 id="b数学"><a class="markdownIt-Anchor" href="#b数学"></a> <b>数学</h3><hr /><p>MarkDown中如果需要渲染数学公式，必须用两个美元符$$包裹住<a href="http://www.ctex.org/TeX/">Tex</a>或<a href="https://www.latex-project.org/">LaTex</a>来实现，<br />提交后，文章会根据需要加载的Mathjax对数学公式进行渲染。但是要单独了解它并使用<br />又需要花时间去熟悉它们的写法。</p><blockquote><p>所以我个人使用以下方法：</p></blockquote><p>使用Codecogs将所需要的符号转换成Latex代码</p><blockquote><p>链接： <a href="https://www.codecogs.com/latex/eqneditor.php">https://www.codecogs.com/latex/eqneditor.php</a></p></blockquote><p>例如：先点击右上角的矩阵图标 输入 2,3 创建一个两行三列的矩阵，窗口中结果如下</p><pre><code>\begin&#123;bmatrix&#125; &amp;  &amp; \\  &amp;  &amp; \end&#123;bmatrix&#125;</code></pre><p>依次把数字间隔填入&amp;间隔中。最后再MarkDown中</p><pre><code>$$\begin&#123;bmatrix&#125; 1&amp; 2 &amp;3 \\  4&amp; 5 &amp;6\end&#123;bmatrix&#125;$$</code></pre><p>结果如下</p><p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo fence="true">[</mo><mtable rowspacing="0.15999999999999992em" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><annotation encoding="application/x-tex">\begin{bmatrix} 1&amp; 2 &amp;3 \\  4&amp; 5 &amp; 6\end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.40003em;vertical-align:-0.95003em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9500000000000004em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-2.4099999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9500000000000004em;"><span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">]</span></span></span></span></span></span></span></p><p>行间公式<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>l</mi><mi>o</mi><msubsup><mi>g</mi><mn>2</mn><mi>n</mi></msubsup></mrow><annotation encoding="application/x-tex">O(f(n))=log_2^{n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mclose">)</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9425479999999999em;vertical-align:-0.24810799999999997em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-2.4518920000000004em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span></span></span></span>测试</p><hr /><h3 id="b关于hexo框架使用数学公式渲染的问题"><a class="markdownIt-Anchor" href="#b关于hexo框架使用数学公式渲染的问题"></a> <b>关于Hexo框架使用数学公式渲染的问题</h3><hr /><p><font color=#FF0000 >Hexo框架中似乎普遍存在这中问题，一下是个人的解决方法：</font></p><ul><li>先卸载自带的hexo-renderer-marked渲染核心 npm install hexo-renderer-markdown-it-plus --save</li><li>安装hexo-renderer-markdown-it-plus渲染核心</li><li>安装markdown-it-katex插件</li><li>在_config.yml中配置plus核心的内容</li></ul><pre>#KaTex Configuration Sectionmarkdown_it_plus:  highlight: true  html: true  xhtmlOut: true  breaks: true  langPrefix:  linkify: true  typographer:  quotes: “”‘’  pre_class: highlight  plugins:    - plugin:      name: '@neilsustc/markdown-it-katex'      enable: true      options:        strict: false</pre><p>-最后在文章的ForntMatter中设置</p>  <pre>  katex: true  </pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> MarkDown </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> MarkDown </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>这是一篇新文章</title>
+      <link href="2021/05/13/%E5%BC%80%E5%A7%8B/myFirstPage/"/>
+      <url>2021/05/13/%E5%BC%80%E5%A7%8B/myFirstPage/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 开始 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 记录 </tag>
+            
+            <tag> HEXO </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
