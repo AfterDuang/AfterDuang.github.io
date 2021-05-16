@@ -105,4 +105,21 @@ deploy:
   type: git
   repo: https://github.com/AfterDuang/AfterDuang.github.io # 比如：https://github.com/YunYouJun/yunyoujun.github.io
   branch: master # 默认使用 master 分支
-  message: Update Hexo Static Content # 你可以自定义此次部署更新的说明
+  message: Update new Hexo Static Content # 你可以自定义此次部署更新的说明
+
+markdown_it_plus:
+  highlight: true
+  html: true
+  xhtmlOut: true
+  breaks: true
+  langPrefix:
+  linkify: true
+  typographer:
+  quotes: “”‘’
+  pre_class: highlight
+  plugins:
+    - plugin:
+      name: '@neilsustc/markdown-it-katex'
+      enable: true
+      options:
+        strict: false
