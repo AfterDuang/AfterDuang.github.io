@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Blender 渲染初探</title>
+      <link href="2021/05/19/Blender/BlenderStart/"/>
+      <url>2021/05/19/Blender/BlenderStart/</url>
+      
+        <content type="html"><![CDATA[<p>最近Blender更新了带有Cycles X的Alpha版本，所以乘此机会了解了一下Blender的用法，<br />粗略的制作了这张图。</p><p><img src="/images/BlenderStartTitle.png" alt="" / loading="lazy"></p><blockquote><p>Blender 是一款开源，跨平台，并且全能的三维动画制作软件，它提供了从概念绘画到建模，<br />到最终的渲染合成的全部解决方案，并且拥有非常活跃的社区生态。在未来有非常理想的生长<br />空间，这也是有必要去学习的一个很重要的理由。</p></blockquote><p><b>学习了主要包含：</b></p><ul><li>Blender的操作</li><li>基本的模型建立</li><li>基本的节点使用</li><li>NPR的通常渲染方法</li></ul><hr /><span id="more"></span><p><img src="/images/BlenderStartPreView.png" alt="" / loading="lazy"></p><h4 id="b就说说这张图的制作过程吧b"><a class="markdownIt-Anchor" href="#b就说说这张图的制作过程吧b"></a> <b>就说说这张图的制作过程吧</b></h4><hr /><p>首先，值得注意的是Blender的操作在我个人看来非常的反人类，我花了很久的时间，<br />才慢慢适应过来。<br />适应过来之后，感觉这个软件功能模块做得非常的分明，在对应的模块做对应的事情。<br />除去了菜单栏上的那一大堆按钮，整个界面非常整洁，对应的模块干对应的事情。</p><hr /><p><b>先来说说这个草</b></p><p><img src="/images/BlenderStartGrassPreview.png" alt="" / loading="lazy"></p><p>由于开始想要尝试的风格比较明确，我直接去B站搜了个<a href="https://www.bilibili.com/video/BV1Sk4y1C7Uy?from=search&amp;seid=1962023099087612406">教程</a>。</p><blockquote><p>这个教程直接用了两重映射，一个映射基本噪波，另一个映射条纹的噪波，然后利用<br />Ramp节点做草丛渐变，这样造成了一些问题，就是这个ramp不是很方便控制颜色，并<br />且每次都会在这个阶段调试很长时间，故改用如下方法。</p></blockquote><p><img src="/images/BlenderStartGrassNode.png" alt="" / loading="lazy"></p><p>使用噪波置换纹理坐标，并用Ramp控制噪波分界上的过渡，最后Lerp草的两种颜色并<br />连接到自发光即可，最后得到的效果是这样。</p><p><img src="/images/BlenderGrassPreview2.png" alt="" / loading="lazy"></p><p>由于是自发光着色器，所以草并没有受到光照的影响，这是比较理想的效果。但是我需<br />要草地接收物体的阴影，所以在此把漫反射节点引入。以此为阴影贴图lerp草体，来<br />实现阴影效果</p><p><img src="/images/BlenderStartGrassNode2.png" alt="" / loading="lazy"></p><p>但是结果出现了问题</p><p><img src="/images/BlenderStartGrassPreview3.png" alt="" / loading="lazy"></p><p>显然是因为这个漫反射着色器把所有的阴影都拿下来了，我们不需要这部分。思考了些许时间，<br />最后把法线防线手动定位了一下解决了问题</p><p><img src="/images/BlenderStartGrassNode3.png" alt="" / loading="lazy"><br /><img src="/images/BlenderStartGrassPreview4.png" alt="" / loading="lazy"></p><p>最后由于草是基于Blenderd的毛发粒子做的，给场景中加个风场，就能让草随风飘动。<br />下面是草的节点图。</p><p><img src="/images/BlenderStartGrassNode4.png" alt="" / loading="lazy"></p><p><b>然后人的话其实没什么可说的，值得一提的是，我往任何模型上贴贴图，都会像蒙<br />了层豆腐皮一样，很亮</b></p><blockquote><p>最后在节点中强行加了个Gama节点解决问题，可能是线性工作流的问题，但是导入的节<br />点也都改过了，没啥效果。</p></blockquote><p>下面是人物的节点图：</p><p><img src="/images/BlenderStartCharNode.png" alt="" / loading="lazy"></p><p>最后摆好摄像机，设置景深和EEVEE的辉光就可以达到最终效果啦！</p><p><img src="/images/BlenderStartEndperview.png" alt="" / loading="lazy"></p><hr /><h4 id="b总结b"><a class="markdownIt-Anchor" href="#b总结b"></a> <b>总结</b></h4><hr /><p>虽然说Blender是个非常全能的软件，但是在使用的过程中还是有很多别扭的情况，例如<br />相乘节点乘出来是个黑白的，几个颜色滤镜的节点并不像我自己理解的一样工作。在我个人<br />看来，它的EEVEE渲染器并不具备引擎中那么高的灵活性。但是又一想，对于Blender这款<br />软件中，它确实有能方便很多，所有的BSDF这些着色器节点可以直接调用使用，而且能同时<br />支持Cycles无缝切换。这些对于用户来说还是非常舒服的！我也会继续研究和使用它，同时<br />以上的一些说法可能是我自己对软件不够了解，如果有幸你能看到，欢迎来阔个列啊~</p><p><img src="/images/BlenderStartEndGif.gif" alt="" / loading="lazy"></p><blockquote><p><b>END</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> Blender </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Blender </tag>
+            
+            <tag> Shader </tag>
+            
+            <tag> Rendering </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>关于MarkDownd的一点点复杂的用法</title>
       <link href="2021/05/14/MarkDown/MarkDowmHelp/"/>
       <url>2021/05/14/MarkDown/MarkDowmHelp/</url>
