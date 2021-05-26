@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>PDG FORM UNITY记录</title>
+      <link href="2021/05/25/Houdini/PDGLInkUnity/"/>
+      <url>2021/05/25/Houdini/PDGLInkUnity/</url>
+      
+        <content type="html"><![CDATA[<h3 id="bhoudini-pdgb"><a class="markdownIt-Anchor" href="#bhoudini-pdgb"></a> <b>Houdini PDG</b></h3><blockquote><p><a href="https://www.bilibili.com/video/BV1fb411E7No">参考教程</a><br /><a href="https://zhuanlan.zhihu.com/p/68868983">图文解析</a></p></blockquote><p>Houdini PDG 是在17.5版本中增加的一个流程管理模块，可以用此工具方便的进行分布<br />生成。在TOP网格中PDG可以直观的描述这些依赖关系，甚至可以分发到其他计算机同时<br />执行。能更灵活的自动化生产过程。</p><blockquote><p>在<a href="https://www.sidefx.com/learn/pipeline-pdg/">这里</a>可以看到更多的关于PDG的教程资料</p></blockquote><span id="more"></span><h4 id="bhoudini-pdg-应用在游戏生产中b"><a class="markdownIt-Anchor" href="#bhoudini-pdg-应用在游戏生产中b"></a> <b>Houdini PDG 应用在游戏生产中</b></h4><hr /><p>在Unite 2019大会上，SideFx已经演示过了PDG在Houdini Engine上的应用。在我的理<br />解中其实就是把一个大的HDA分成数个小HDA,再进入PDG中进行过程管理，形成一条生产<br />链，可以方便的在中间修改数据，并生成最后的结果。</p><p>在官方的<a href="https://www.sidefx.com/docs/unity/_environment.html">文档</a>中可以看到，在Unity中使用Houdini ENgine 是要对插件环境进行配置的。<br />环境路径的设置必须以<code>HEU_ENVPATH</code>前缀开头。</p><p>示例:</p><pre>HEU_ENVPATH_MYPATH</pre><p>故在Unity中导入HoudiniEngine后在Assets目录下创建unity_houdini.env文件<br />文件内写入以下路径，并在Engine设置中刷新工作目录。</p><pre>HEU_ENVPATH_JOB = E:/HoudiniManager/PDG_GAMEING_TEST</pre><p>其中 路径内容是我要让PDG工作的目录，Houdini文件中的PDG Network下，也要进行配置</p><p><font color=#B55578 ><b>配置完成之后，就可以打开Houdini,开始制作初步的地形啦</b> </font></p><hr /><p>直接拿那会跟着教程做的HDA来说，现在已经有了三个制作地形需要使用的基本HDA文件</p><p><img src="/images/PDGLinkUnity/HDAs.png" alt="" / loading="lazy"></p><p>这三个HDA代表了以下三个步骤。<br /><img src="/images/PDGLinkUnity/Processor1.png" alt="" / loading="lazy"><br /><img src="/images/PDGLinkUnity/Processor2.png" alt="" / loading="lazy"><br /><img src="/images/PDGLinkUnity/Processor3.png" alt="" / loading="lazy"></p><p>在Houdini中，为了方便使用在unity_houdini.env中设置的环境变量，按<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd><br />打开环境变量设置，在Variables中,TextPort 分别写入HEU_ENVPATH_JOB、E:/HoudiniManager/PDG_GAMEING_TEST<br />这样我们就可以方便的直接引用此变量。</p><p>之后我们先创建TOP网格和一个空对象，将他们一起<kbd>Shift</kbd>+<kbd>C</kbd>一下。<br />并右键创建资源(HDA)。</p><p><img src="/images/PDGLinkUnity/TOPSet.png" alt="" / loading="lazy"><br /><img src="/images/PDGLinkUnity/HDASet.png" alt="" / loading="lazy"></p><p>在TOP网格中的 localscheduler默认的Working Directory 中填入之前设置好的<code>HEU_ENVPATH_JOB</code><br />之后创建HDA Proccessor 节点并导入好之前的三个HDA，并按处理顺序连接好。这就是<br />一个基本的处理HDA流程的TOP网格。</p><p><font color=#B55578 >设置如下</font></p><p><img src="/images/PDGLinkUnity/TOPNet.png" alt="" / loading="lazy"></p><p><font color=#FF0000 >注意设置每个HDA的输入输出<code>$PDG_DIR</code>是当前PDG工作目录,也就是<code>$HEU_ENVPATH_JOB</code> </font></p><p>回到Object层级 右键Save Node Type保存(可以把HDA Proccessor中的参数绑到这个TOP的HDA上)<br />可以实时的在Unity中调整参数重新烘焙结果，这里之前为了方便没这么做。</p><p><b>回到Unity</b><br />拖入刚刚在houdini中用TOP网格创建的HDA，再拖进场景。选中对象，点击菜单栏上的HoudiniEngine→PDG→Great PDG Link<br />可以发现，PDG模块中识别到了这个资源中的TOP网格和网格中的节点，在TOP Node中选择<br />最后一项ERODE,勾上AutoLoad Results(最后读取Output是这个结果，全勾上就会显示三个)<br />开始CookNode。烘焙完成后Unity层级中将新建出来一个OUTPUTS的对象，显示结果如下。</p><p><img src="/images/PDGLinkUnity/Preview1.png" alt="" / loading="lazy"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Games </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Houdini </tag>
+            
+            <tag> Unity </tag>
+            
+            <tag> PDG </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Blender 渲染初探</title>
       <link href="2021/05/19/Blender/BlenderStart/"/>
       <url>2021/05/19/Blender/BlenderStart/</url>
