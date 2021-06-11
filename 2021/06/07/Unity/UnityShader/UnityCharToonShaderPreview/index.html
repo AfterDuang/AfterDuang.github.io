@@ -1,0 +1,792 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#7ECCCD"><meta name="author" content="MGCJの拖拉机"><meta name="copyright" content="MGCJの拖拉机"><meta name="generator" content="Hexo 5.4.0"><meta name="theme" content="hexo-theme-yun"><title>Unity角色卡通渲染 | 柚叶的藏宝阁</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.24/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_j5gk85dg4pf.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+});
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#7ECCCD"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"example.com","root":"/","title":"柚叶的藏宝阁","version":"1.6.1","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="Unity Shader 近段时间，断断续续的研究了很多Shader,和计算机图形学相关的内容，在上个月些出了自己的第一个稍微能用点的卡通着色器。 先说功能。  功能包括:  主纹理颜色 阴影颜色 阴影范围 Ramp控制的阴影 阴影Smooth 阴影的边缘噪波位移(笔刷感) 头发基于位移贴图的各向异性高光 NDC空间的外描边 菲涅尔 高光部分的Bloom大小 头发的投影         预览图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity角色卡通渲染">
+<meta property="og:url" content="http://example.com/2021/06/07/Unity/UnityShader/UnityCharToonShaderPreview/index.html">
+<meta property="og:site_name" content="柚叶的藏宝阁">
+<meta property="og:description" content="Unity Shader 近段时间，断断续续的研究了很多Shader,和计算机图形学相关的内容，在上个月些出了自己的第一个稍微能用点的卡通着色器。 先说功能。  功能包括:  主纹理颜色 阴影颜色 阴影范围 Ramp控制的阴影 阴影Smooth 阴影的边缘噪波位移(笔刷感) 头发基于位移贴图的各向异性高光 NDC空间的外描边 菲涅尔 高光部分的Bloom大小 头发的投影         预览图">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/ShaderUIPreview.png">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/Preview.png#pic_left">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/ShadowRamp.png">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/ShadowRampNoise.png">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/ANISOTROPICPreview.gif">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/FresnelPreview.png">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/HairShadow.png">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/HairDepth.png">
+<meta property="og:image" content="http://example.com/images/UnityCharToonShader/Pre.gif">
+<meta property="article:published_time" content="2021-06-07T08:49:27.427Z">
+<meta property="article:modified_time" content="2021-06-11T08:02:41.930Z">
+<meta property="article:author" content="MGCJの拖拉机">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Shader">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/UnityCharToonShader/ShaderUIPreview.png"><script src="/js/ui/mode.js"></script></head><body><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="Table of Contents"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="Overview"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info mickey-mouse"><a class="site-author-avatar" href="/about/" title="MGCJの拖拉机"><img width="96" loading="lazy" src="/images/HeadImage.png" alt="MGCJの拖拉机"></a><div class="site-author-name"><a href="/about/">MGCJの拖拉机</a></div><span class="site-name">柚叶的藏宝阁</span><sub class="site-subtitle">柚叶</sub><div class="site-desciption">纸片人那么薄，叠起来才有厚度</div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="Home"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="Archives"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">5</span></a></div><div class="site-state-item"><a href="/categories/" title="Categories"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">4</span></a></div><div class="site-state-item"><a href="/tags/" title="Tags"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">9</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=EStUoGjIJMWW_7e7vKZWScpdR0xyUwip&amp;noverify=0#" title="QQ" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/AfterDuang" title="GitHub" target="_blank" style="color:#181717"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:icesmall@outlook.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=263439846" title="网易云音乐" target="_blank" style="color:#C10D0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/tuo-la-ji-35-56" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/19656307" title="哔哩哔哩动画" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a><a class="links-item hty-icon-button" href="/girls/" title="喜欢的女孩子" style="color:hotpink"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-women-line"></use></svg></a><a class="links-item hty-icon-button" href="/myweb/" title="好用的网站" style="color:undefined"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#bunity-shaderb"><span class="toc-number">1.</span> <span class="toc-text"> Unity Shader</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E9%98%B4%E5%BD%B1b"><span class="toc-number">1.1.</span> <span class="toc-text"> 阴影</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E7%A1%AC%E9%98%B4%E5%BD%B1b"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 硬阴影</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E7%A1%AC%E9%98%B4%E5%BD%B1%E7%9A%84%E5%88%86%E7%BA%A7b"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 硬阴影的分级</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E7%A1%AC%E9%98%B4%E5%BD%B1%E7%9A%84%E7%BD%AE%E6%8D%A2b"><span class="toc-number">1.1.3.</span> <span class="toc-text"> 硬阴影的置换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7%E5%A4%B4%E5%8F%91b"><span class="toc-number">1.2.</span> <span class="toc-text"> 各向异性头发</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E6%8F%8F%E8%BE%B9b"><span class="toc-number">1.3.</span> <span class="toc-text"> 描边</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E8%8F%B2%E6%B6%85%E5%B0%94b"><span class="toc-number">1.4.</span> <span class="toc-text"> 菲涅尔</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E5%A4%B4%E5%8F%91%E7%9A%84%E6%8A%95%E5%BD%B1b"><span class="toc-number">1.5.</span> <span class="toc-text"> 头发的投影</span></a></li></ol></li></ol></div></div></div><div class="tag-cloud"><div class="tag-cloud-tags"><a href="/tags/Blender/" style="font-size: 12px; color: #0e1926">Blender</a> <a href="/tags/HEXO/" style="font-size: 12px; color: #0e1926">HEXO</a> <a href="/tags/Houdini/" style="font-size: 12px; color: #0e1926">Houdini</a> <a href="/tags/MarkDown/" style="font-size: 12px; color: #0e1926">MarkDown</a> <a href="/tags/PDG/" style="font-size: 12px; color: #0e1926">PDG</a> <a href="/tags/Rendering/" style="font-size: 12px; color: #0e1926">Rendering</a> <a href="/tags/Shader/" style="font-size: 30px; color: #0e1926">Shader</a> <a href="/tags/Unity/" style="font-size: 30px; color: #0e1926">Unity</a> <a href="/tags/%E8%AE%B0%E5%BD%95/" style="font-size: 12px; color: #0e1926">记录</a></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="http://example.com/2021/06/07/Unity/UnityShader/UnityCharToonShaderPreview/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="MGCJの拖拉机"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="柚叶的藏宝阁"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Unity角色卡通渲染</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="Created: 2021-06-07 16:49:27" itemprop="dateCreated datePublished" datetime="2021-06-07T16:49:27+08:00">2021-06-07</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="Modified: 2021-06-11 16:02:41" itemprop="dateModified" datetime="2021-06-11T16:02:41+08:00">2021-06-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/Games/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">Games</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/Unity/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">Unity</span></a><a class="tag-item" href="/tags/Shader/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">Shader</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#7ECCCD;"><h3 id="bunity-shaderb"><a class="markdownIt-Anchor" href="#bunity-shaderb"></a> <b>Unity Shader</b></h3>
+<p>近段时间，断断续续的研究了很多Shader,和计算机图形学相关的内容，在上个月些出了自己的第一个稍微能用点的卡通着色器。<br />
+先说功能。</p>
+<hr />
+<p>功能包括:</p>
+<ul>
+<li>主纹理颜色</li>
+<li>阴影颜色</li>
+<li>阴影范围</li>
+<li>Ramp控制的阴影</li>
+<li>阴影Smooth</li>
+<li>阴影的边缘噪波位移(笔刷感)</li>
+<li>头发基于位移贴图的各向异性高光</li>
+<li>NDC空间的外描边</li>
+<li>菲涅尔</li>
+<li>高光部分的Bloom大小</li>
+<li>头发的投影</li>
+</ul>
+<div align=left>
+    <img src="/images/UnityCharToonShader/ShaderUIPreview.png" width="100%" height="100%" style="zoom:200%" loading="lazy">
+</div>
+<p><font size=6>预览图 </font></p>
+<img src="/images/UnityCharToonShader/Preview.png#pic_left" width="100%" height="100%" style="zoom:200%" loading="lazy">
+<span id="more"></span>
+<h4 id="b阴影b"><a class="markdownIt-Anchor" href="#b阴影b"></a> <b>阴影</b></h4>
+<blockquote>
+<p>描述各个阴影的部分</p>
+</blockquote>
+<h5 id="b硬阴影b"><a class="markdownIt-Anchor" href="#b硬阴影b"></a> <b>硬阴影</b></h5>
+<p>先计算一个基本的halfLambert漫反射模型，再利用smoothstep函数把阴影边缘收缩。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">float</span> halfLambert <span class="token operator">=</span> <span class="token number">0.5</span> <span class="token operator">*</span> <span class="token function">dot</span><span class="token punctuation">(</span>worldNormal <span class="token punctuation">,</span> lightDirWS<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0.5</span><span class="token punctuation">;</span>
+<span class="token keyword">float</span> Lambert <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> _ShadowSmooth<span class="token punctuation">,</span> halfLambert <span class="token operator">-</span> _ShadowRange<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">float</span> FinalRamp <span class="token operator">=</span> <span class="token number">1.0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h5 id="b硬阴影的分级b"><a class="markdownIt-Anchor" href="#b硬阴影的分级b"></a> <b>硬阴影的分级</b></h5>
+<img src="/images/UnityCharToonShader/ShadowRamp.png" width="100%" height="100%" style="zoom:100%" loading="lazy">
+<p>原理上是利用一张Ramp纹理来采样之前的Lambert计算出来的结果，就能按照灰度值，将颜色映射到阴影的对应位置上，阴影的边缘将取决<br />
+于Ramp的纹理样式。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">float</span> rampValue <span class="token operator">=</span> Lambert<span class="token punctuation">;</span>
+<span class="token keyword">float</span> Ramp <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_ShadowRamp<span class="token punctuation">,</span> sampler_ShadowRamp<span class="token punctuation">,</span> <span class="token function">float2</span><span class="token punctuation">(</span><span class="token function">saturate</span><span class="token punctuation">(</span>rampValue<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0.01</span><span class="token punctuation">)</span> <span class="token operator">*</span> _ShadowRamp_ST<span class="token punctuation">.</span>xy <span class="token operator">+</span> _ShadowRamp_ST<span class="token punctuation">.</span>zw<span class="token punctuation">)</span><span class="token punctuation">.</span>x<span class="token punctuation">;</span><span class="token comment">//因为不知道为什么 要做一次偏移</span>
+FinalRamp <span class="token operator">=</span> <span class="token function">saturate</span><span class="token punctuation">(</span>Ramp<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h5 id="b硬阴影的置换b"><a class="markdownIt-Anchor" href="#b硬阴影的置换b"></a> <b>硬阴影的置换</b></h5>
+<img src="/images/UnityCharToonShader/ShadowRampNoise.png" width="100%" height="100%" style="zoom:100%" loading="lazy">
+<p>这步在计算完diffuse之后进行，先将计算好的Lambert，用噪波进行扰乱，再使用扰乱过的lambert作为UV来采样映射生成阴影。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">USED_SHAODWRAMP</span></span>
+
+<span class="token keyword">float</span> rampValue <span class="token operator">=</span> Lambert<span class="token punctuation">;</span>
+
+  <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">RAMP_NOISE</span></span>
+
+  rampValue <span class="token operator">+=</span>ShadowNoiseMap<span class="token punctuation">.</span>x <span class="token operator">*</span> _NoiseLevel <span class="token operator">*</span> rampValue<span class="token punctuation">;</span><span class="token comment">//###用ranmpvalume相加后 白色的部分会直接全白 阴影交界的部分会随着噪波有一定变化以此实现只有边缘交接有噪波效果</span>
+
+  <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+<span class="token keyword">float</span> Ramp <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_ShadowRamp<span class="token punctuation">,</span> sampler_ShadowRamp<span class="token punctuation">,</span> <span class="token function">float2</span><span class="token punctuation">(</span><span class="token function">saturate</span><span class="token punctuation">(</span>rampValue<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0.01</span><span class="token punctuation">)</span> <span class="token operator">*</span> _ShadowRamp_ST<span class="token punctuation">.</span>xy <span class="token operator">+</span> _ShadowRamp_ST<span class="token punctuation">.</span>zw<span class="token punctuation">)</span><span class="token punctuation">.</span>x<span class="token punctuation">;</span><span class="token comment">//因为不知道为什么 要做一次偏移</span>
+
+FinalRamp <span class="token operator">=</span> <span class="token function">saturate</span><span class="token punctuation">(</span>Ramp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="b各向异性头发b"><a class="markdownIt-Anchor" href="#b各向异性头发b"></a> <b>各向异性头发</b></h4>
+<img src="/images/UnityCharToonShader/ANISOTROPICPreview.gif" width="100%" height="100%" style="zoom:50%" loading="lazy">
+<p>看了一遍Unitedtokyo2018米哈游的文档，其中有提及这个的具体做法，就照样搬了过来。但他们的高光分了两层，一层高频，一层低频。<br />
+最后两者相加，会在球面上形成很好看的过渡效果。而我为了偷懒只做了一层。</p>
+<p><b>首先是各项异性的高光算法，这个算法会再头发上生成一个基本的各项异性高光。</b></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">float</span> <span class="token function">StrandSpecular</span><span class="token punctuation">(</span>float3 T<span class="token punctuation">,</span> float3 V<span class="token punctuation">,</span> float3 L<span class="token punctuation">,</span> <span class="token keyword">float</span> exponent<span class="token punctuation">,</span> <span class="token keyword">float</span> strength<span class="token punctuation">)</span><span class="token comment">//头发各向异性</span>
+        <span class="token punctuation">&#123;</span>
+            float3 H <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>L<span class="token operator">+</span>V<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">float</span> dotTH <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>T<span class="token punctuation">,</span>L<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">float</span> sinTH <span class="token operator">=</span> <span class="token function">sqrt</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token operator">-</span>dotTH<span class="token operator">*</span>dotTH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">float</span> dirAtten <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1.0</span> <span class="token punctuation">,</span> <span class="token number">0.0</span><span class="token punctuation">,</span> dotTH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> dirAtten <span class="token operator">*</span> <span class="token function">pow</span><span class="token punctuation">(</span>sinTH <span class="token punctuation">,</span> exponent<span class="token punctuation">)</span>  <span class="token operator">*</span> strength<span class="token punctuation">;</span>
+
+        <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这边最后的strength用来控制高光的大小，exponent来控制高光宽度。另外值得一说的就是，由于Unity坐标系的关系，切线的数据需要换成副切线。<br />
+<b>现在高光的区域有了，需要给高光增加抖动。</b></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">float3 <span class="token function">ShitftTanget</span><span class="token punctuation">(</span>float3 T<span class="token punctuation">,</span>float3 N<span class="token punctuation">,</span> <span class="token keyword">float</span> shift<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            float3 shiftT <span class="token operator">=</span> T <span class="token operator">+</span> shift <span class="token operator">*</span> N<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token function">normalize</span><span class="token punctuation">(</span>shiftT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Shift指定输出了拉扯的大小，这个变量用于控制抖动的大小，实现头发上的质感。最终将这个结果代替原有的高光，就实现了各向异性的效果。</p>
+<h4 id="b描边b"><a class="markdownIt-Anchor" href="#b描边b"></a> <b>描边</b></h4>
+<p>为了解决再场景比例缩放而导致的描边粗细变化的问题，使用了再NDC(归一化的设备空间？)这个方法。原理上就是用摄像机投影矩阵，将观察空间下的<br />
+法线转换为NDC空间中的法线，通过设备空间下的法线长度信息来控制描边的宽度。当然还有屏幕长宽比造成的描边不均匀问题，需要计算屏幕长宽比来<br />
+解决<br />
+<b>代码。</b></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">float3 normalOS <span class="token operator">=</span> normal<span class="token punctuation">;</span>
+float3 normalVS <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token punctuation">(</span>float3x3<span class="token punctuation">)</span>UNITY_MATRIX_IT_MV<span class="token punctuation">,</span> normal<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+float3 ndcNormal<span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token punctuation">(</span>float3x3<span class="token punctuation">)</span>UNITY_MATRIX_P<span class="token punctuation">,</span>normalVS<span class="token punctuation">)</span><span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+float4 nearUpperRight <span class="token operator">=</span> <span class="token function">mul</span><span class="token punctuation">(</span>unity_CameraInvProjection<span class="token punctuation">,</span> <span class="token function">float4</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> UNITY_NEAR_CLIP_VALUE<span class="token punctuation">,</span> _ProjectionParams<span class="token punctuation">.</span>y<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//摄像机投影矩阵的逆矩阵和近裁切</span>
+<span class="token keyword">float</span> aspect <span class="token operator">=</span> <span class="token function">abs</span><span class="token punctuation">(</span>nearUpperRight<span class="token punctuation">.</span>y <span class="token operator">/</span> nearUpperRight<span class="token punctuation">.</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//计算屏幕的长宽比</span>
+ndcNormal<span class="token punctuation">.</span>x <span class="token operator">*=</span> aspect<span class="token punctuation">;</span>
+positionCS<span class="token punctuation">.</span>xy <span class="token operator">+=</span> <span class="token punctuation">(</span><span class="token number">0.01</span> <span class="token operator">*</span> _Outlinewidth  <span class="token operator">*</span> positionCS<span class="token punctuation">.</span>w<span class="token punctuation">)</span> <span class="token operator">*</span> ndcNormal<span class="token punctuation">.</span>xy<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="b菲涅尔b"><a class="markdownIt-Anchor" href="#b菲涅尔b"></a> <b>菲涅尔</b></h4>
+<p>菲涅尔是物体边缘光的一种算法，在各类卡通渲染中，常用于模拟物体边缘会渗透出来一些光的现象。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">float</span> Fresnel <span class="token operator">=</span>  <span class="token number">1.0</span> <span class="token operator">-</span> <span class="token function">saturate</span><span class="token punctuation">(</span><span class="token function">dot</span><span class="token punctuation">(</span>viewDir<span class="token punctuation">,</span>worldNormal<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">float</span> FresnelRange <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span>_FMin<span class="token punctuation">,</span>_FMax<span class="token punctuation">,</span>Fresnel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+float3 FinalFresnel <span class="token operator">=</span> FresnelRange <span class="token operator">*</span> _FColor<span class="token punctuation">.</span>xyz<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<img src="/images/UnityCharToonShader/FresnelPreview.png" width="100%" height="100%" style="zoom:100%" loading="lazy">
+原理上是V*N最后用smoothstep来调节范围
+<h4 id="b头发的投影b"><a class="markdownIt-Anchor" href="#b头发的投影b"></a> <b>头发的投影</b></h4>
+<img src="/images/UnityCharToonShader/HairShadow.png" width="100%" height="100%" style="zoom:100%" loading="lazy">
+<p>这是至今为止也没太搞明白的一个部分，利用头发和脸部的深度信息来做偏移，来获取投影到脸部的阴影区域。</p>
+<p>首先需要创建两个Layer,一个头发层，和一个需要投影阴影的脸或者其他。然后需要一个RenderFeature。<br />
+RenderFeature,是一个URP对外的Pass扩展接口，可以介入渲染管线中间来做一些操作。<br />
+<b>大概是下面这样，查阅了些资料，理解写在注释里了</b></p>
+<pre class="line-numbers language-csharp" data-language="csharp"><code class="language-csharp">
+<span class="token keyword">using</span> <span class="token namespace">UnityEngine</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">UnityEngine<span class="token punctuation">.</span>Rendering</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">.</span>Universal</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CelHairShadow</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ScriptableRendererFeature</span></span><span class="token comment">//把这个大pass加进renderer</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">System<span class="token punctuation">.</span>Serializable</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Setting</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token class-name">RenderPassEvent</span> passEvent <span class="token operator">=</span> RenderPassEvent<span class="token punctuation">.</span>BeforeRenderingOpaques<span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token class-name">LayerMask</span> hairLayer<span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token class-name">LayerMask</span> faceLayer<span class="token punctuation">;</span>
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Range</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span> <span class="token number">5000</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token class-name"><span class="token keyword">int</span></span> queueMin <span class="token operator">=</span> <span class="token number">2000</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Range</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span> <span class="token number">5000</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+        <span class="token keyword">public</span> <span class="token class-name"><span class="token keyword">int</span></span> queueMax <span class="token operator">=</span> <span class="token number">3000</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token class-name">Material</span> material<span class="token punctuation">;</span>
+
+    <span class="token punctuation">&#125;</span><span class="token comment">//系统序列化显示的设置项Setting</span>
+    <span class="token keyword">public</span> <span class="token class-name">Setting</span> setting <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Setting</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//实例化设置类型</span>
+    <span class="token keyword">class</span> <span class="token class-name">CustomRenderPass</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ScriptableRenderPass</span></span><span class="token comment">//定义自定义渲染使用的pass  ScriptableRenderPass 也是实际的渲染工作在这里</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token class-name"><span class="token keyword">int</span></span> soildColorID <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token class-name">ShaderTagId</span> shaderTag <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"UniversalForward"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token class-name">Setting</span> setting<span class="token punctuation">;</span><span class="token comment">//需要用到的数据</span>
+        
+        <span class="token class-name">FilteringSettings</span> filtering<span class="token punctuation">;</span>
+        <span class="token class-name">FilteringSettings</span> filtering2<span class="token punctuation">;</span><span class="token comment">//一个过滤器，更直白来说，它可以帮助我们选择我们想要渲染的物体，</span>
+        <span class="token keyword">public</span> <span class="token function">CustomRenderPass</span><span class="token punctuation">(</span><span class="token class-name">Setting</span> setting<span class="token punctuation">)</span><span class="token comment">//构造方法 对象初始化自动执行</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>setting <span class="token operator">=</span> setting<span class="token punctuation">;</span>
+
+            <span class="token class-name">RenderQueueRange</span> queue <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RenderQueueRange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            queue<span class="token punctuation">.</span>lowerBound <span class="token operator">=</span> Mathf<span class="token punctuation">.</span><span class="token function">Min</span><span class="token punctuation">(</span>setting<span class="token punctuation">.</span>queueMax<span class="token punctuation">,</span> setting<span class="token punctuation">.</span>queueMin<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            queue<span class="token punctuation">.</span>upperBound <span class="token operator">=</span> Mathf<span class="token punctuation">.</span><span class="token function">Max</span><span class="token punctuation">(</span>setting<span class="token punctuation">.</span>queueMax<span class="token punctuation">,</span> setting<span class="token punctuation">.</span>queueMin<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            filtering <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">FilteringSettings</span><span class="token punctuation">(</span>queue<span class="token punctuation">,</span> setting<span class="token punctuation">.</span>hairLayer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            filtering2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">FilteringSettings</span><span class="token punctuation">(</span>queue<span class="token punctuation">,</span> setting<span class="token punctuation">.</span>faceLayer<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//过滤出对应layer下的物体</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Configure</span><span class="token punctuation">(</span><span class="token class-name">CommandBuffer</span> cmd<span class="token punctuation">,</span> <span class="token class-name">RenderTextureDescriptor</span> cameraTextureDescriptor<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token comment">////在执行渲染过程之前，Renderer 将调用此方法。如果需要配置渲染目标及其清除状态，并创建临时渲染目标纹理，</span>
+            <span class="token comment">//那就要重写这个方法。如果渲染过程未重写这个方法，则该渲染过程将渲染到激活状态下 Camera 的渲染目标。</span>
+            <span class="token comment">//get a ID</span>
+            <span class="token class-name"><span class="token keyword">int</span></span> temp <span class="token operator">=</span> Shader<span class="token punctuation">.</span><span class="token function">PropertyToID</span><span class="token punctuation">(</span><span class="token string">"_HairSoildColor"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//查找现有shader中的ID_HairSoildColor</span>
+            <span class="token comment">//use the same settings as the camera texture</span>
+            <span class="token class-name">RenderTextureDescriptor</span> desc <span class="token operator">=</span> cameraTextureDescriptor<span class="token punctuation">;</span><span class="token comment">//创建渲染目标纹理</span>
+            cmd<span class="token punctuation">.</span><span class="token function">GetTemporaryRT</span><span class="token punctuation">(</span>temp<span class="token punctuation">,</span> desc<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//把纹理放进目标ID_HairSoildColor 当在Shader中声明时调用</span>
+            soildColorID <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+            <span class="token comment">//set the RT as Render Target</span>
+            <span class="token function">ConfigureTarget</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">//clear the RT</span>
+            <span class="token function">ConfigureClear</span><span class="token punctuation">(</span>ClearFlag<span class="token punctuation">.</span>All<span class="token punctuation">,</span> Color<span class="token punctuation">.</span>black<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//释放</span>
+
+
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Execute</span><span class="token punctuation">(</span><span class="token class-name">ScriptableRenderContext</span> context<span class="token punctuation">,</span> <span class="token keyword">ref</span> <span class="token class-name">RenderingData</span> renderingData<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token comment">/*
+            var draw1 = CreateDrawingSettings(shaderTag, ref renderingData, renderingData.cameraData.defaultOpaqueSortFlags);
+            draw1.overrideMaterial = setting.material;
+            draw1.overrideMaterialPassIndex = 1;
+            context.DrawRenderers(renderingData.cullResults, ref draw1, ref filtering2);*/</span>
+<span class="token comment">// 是这个类的核心方法，定义我们的执行规则；包含渲染逻辑，设置渲染状态，绘制渲染器或绘制程序网格，调度计算等等。 就是我们需要干什么</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> draw2 <span class="token operator">=</span> <span class="token function">CreateDrawingSettings</span><span class="token punctuation">(</span>shaderTag<span class="token punctuation">,</span> <span class="token keyword">ref</span> renderingData<span class="token punctuation">,</span> renderingData<span class="token punctuation">.</span>cameraData<span class="token punctuation">.</span>defaultOpaqueSortFlags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            draw2<span class="token punctuation">.</span>overrideMaterial <span class="token operator">=</span> setting<span class="token punctuation">.</span>material<span class="token punctuation">;</span>
+            draw2<span class="token punctuation">.</span>overrideMaterialPassIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>renderingData<span class="token punctuation">.</span>cullResults<span class="token punctuation">,</span> <span class="token keyword">ref</span> draw2<span class="token punctuation">,</span> <span class="token keyword">ref</span> filtering<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//绘制</span>
+            <span class="token comment">//这里的核心方法就是渲染使用材质输出的结果</span>
+
+        <span class="token punctuation">&#125;</span>
+
+
+        <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">FrameCleanup</span><span class="token punctuation">(</span><span class="token class-name">CommandBuffer</span> cmd<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+                <span class="token comment">//可用于释放通过此过程创建的分配资源。完成渲染相机后调用。就可以使用此回调释放此渲染过程创建的所有资源。</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token class-name">CustomRenderPass</span> m_ScriptablePass<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//初始化这话RenderFeature</span>
+    <span class="token punctuation">&#123;</span>
+        m_ScriptablePass <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CustomRenderPass</span><span class="token punctuation">(</span>setting<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        m_ScriptablePass<span class="token punctuation">.</span>renderPassEvent <span class="token operator">=</span> setting<span class="token punctuation">.</span>passEvent<span class="token punctuation">;</span><span class="token comment">//设置了setting中使用的渲染队列</span>
+    <span class="token punctuation">&#125;</span>
+
+
+    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">AddRenderPasses</span><span class="token punctuation">(</span><span class="token class-name">ScriptableRenderer</span> renderer<span class="token punctuation">,</span> <span class="token keyword">ref</span> <span class="token class-name">RenderingData</span> renderingData<span class="token punctuation">)</span><span class="token comment">//在Renderer中插入一个或多个 ScriptableRenderPass，对这个 Renderer 每个摄像机都设置一次</span>
+    <span class="token punctuation">&#123;</span>
+        renderer<span class="token punctuation">.</span><span class="token function">EnqueuePass</span><span class="token punctuation">(</span>m_ScriptablePass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><b>然后时对应渲染其中目标纹理的shader</b></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Shader <span class="token string">"Kailu/HairShadowSoild"</span>
+<span class="token punctuation">&#123;</span>
+    SubShader
+    <span class="token punctuation">&#123;</span>
+        Tags <span class="token punctuation">&#123;</span> <span class="token string">"RenderType"</span> <span class="token operator">=</span> <span class="token string">"Opaque"</span> <span class="token string">"RenderPipeline"</span> <span class="token operator">=</span> <span class="token string">"UniversalRenderPipeline"</span> <span class="token punctuation">&#125;</span>
+        
+        HLSLINCLUDE
+        <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"</span></span>
+        
+        <span class="token function">CBUFFER_START</span><span class="token punctuation">(</span>UnityPerMaterial<span class="token punctuation">)</span>
+        float4 _BaseColor<span class="token punctuation">;</span>
+        CBUFFER_END
+        ENDHLSL
+        
+        Pass<span class="token comment">//渲染头发深度</span>
+        <span class="token punctuation">&#123;</span>
+            Name <span class="token string">"HairSimpleColor"</span>
+            Tags <span class="token punctuation">&#123;</span> <span class="token string">"LightMode"</span> <span class="token operator">=</span> <span class="token string">"UniversalForward"</span> <span class="token punctuation">&#125;</span>
+            
+            Cull Off
+            ZTest LEqual
+            ZWrite On
+            
+            HLSLPROGRAM
+            
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">vertex vert</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">fragment frag</span></span>
+            
+            <span class="token keyword">struct</span> <span class="token class-name">a2v</span>
+            <span class="token punctuation">&#123;</span>
+                float4 positionOS<span class="token operator">:</span> POSITION<span class="token punctuation">;</span>
+                float4 color<span class="token operator">:</span> COLOR<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+            
+            <span class="token keyword">struct</span> <span class="token class-name">v2f</span>
+            <span class="token punctuation">&#123;</span>
+                float4 positionCS<span class="token operator">:</span> SV_POSITION<span class="token punctuation">;</span>
+                float4 color<span class="token operator">:</span> COLOR<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+            
+            
+            v2f <span class="token function">vert</span><span class="token punctuation">(</span>a2v v<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                v2f o<span class="token punctuation">;</span>
+                
+                VertexPositionInputs positionInputs <span class="token operator">=</span> <span class="token function">GetVertexPositionInputs</span><span class="token punctuation">(</span>v<span class="token punctuation">.</span>positionOS<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>positionCS <span class="token operator">=</span> positionInputs<span class="token punctuation">.</span>positionCS<span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>color <span class="token operator">=</span> v<span class="token punctuation">.</span>color<span class="token punctuation">;</span><span class="token comment">//顶点颜色</span>
+                <span class="token keyword">return</span> o<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            
+            half4 <span class="token function">frag</span><span class="token punctuation">(</span>v2f i<span class="token punctuation">)</span><span class="token operator">:</span> SV_Target
+            <span class="token punctuation">&#123;</span>
+                <span class="token comment">//In DirectX, z/w from [0, 1], and use reversed Z</span>
+                <span class="token comment">//So, it means we aren't adapt the sample for OpenGL platform</span>
+                <span class="token keyword">float</span> depth <span class="token operator">=</span> <span class="token punctuation">(</span>i<span class="token punctuation">.</span>positionCS<span class="token punctuation">.</span>z <span class="token operator">/</span> i<span class="token punctuation">.</span>positionCS<span class="token punctuation">.</span>w<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> <span class="token function">float4</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> depth<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//渲染深度</span>
+            <span class="token punctuation">&#125;</span>
+            ENDHLSL
+            
+        <span class="token punctuation">&#125;</span>
+        
+        Pass<span class="token comment">//被投影目标深度</span>
+        <span class="token punctuation">&#123;</span>
+            Name <span class="token string">"FaceDepthOnly"</span>
+            Tags <span class="token punctuation">&#123;</span> <span class="token string">"LightMode"</span> <span class="token operator">=</span> <span class="token string">"UniversalForward"</span> <span class="token punctuation">&#125;</span>
+            
+            ColorMask <span class="token number">0</span>
+            ZTest LEqual
+            ZWrite On
+            
+            HLSLPROGRAM
+            
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">vertex vert</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">fragment frag</span></span>
+            
+            <span class="token keyword">struct</span> <span class="token class-name">a2v</span>
+            <span class="token punctuation">&#123;</span>
+                float4 positionOS<span class="token operator">:</span> POSITION<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+            
+            <span class="token keyword">struct</span> <span class="token class-name">v2f</span>
+            <span class="token punctuation">&#123;</span>
+                float4 positionCS<span class="token operator">:</span> SV_POSITION<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+            
+            
+            v2f <span class="token function">vert</span><span class="token punctuation">(</span>a2v v<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                v2f o<span class="token punctuation">;</span>
+                
+                o<span class="token punctuation">.</span>positionCS <span class="token operator">=</span> <span class="token function">TransformObjectToHClip</span><span class="token punctuation">(</span>v<span class="token punctuation">.</span>positionOS<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> o<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            
+            half4 <span class="token function">frag</span><span class="token punctuation">(</span>v2f i<span class="token punctuation">)</span><span class="token operator">:</span> SV_Target
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回黑色</span>
+            <span class="token punctuation">&#125;</span>
+            ENDHLSL
+            
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><font color=#B55578 >这个shader其实因为作者改进了方法，实际上渲染纹理中只渲染了头发的深度信息（遮罩）<br />
+这样可以去掉头发背后不正确的投影</font></p>
+<p>这里的主要作用就是把头发的深度信息出入到_HairSoildColor上，以便在主材质着色器中进行调用。再与要渲染的mesh进行深度对比，<br />
+从而生成投影的阴影遮罩，再进行偏移，作为阴影呈现。</p>
+<p><b>最后渲染如来的头发的深度如下</b></p>
+<img src="/images/UnityCharToonShader/HairDepth.png" width="100%" height="100%" style="zoom:100%" loading="lazy">
+<p><b>最后在主材质的shader中写入</b></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"> <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">IS_FACE</span></span>
+
+    <span class="token keyword">float</span> heightCorrect <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span>_HeightCorrectMax<span class="token punctuation">,</span> _HeightCorrectMin<span class="token punctuation">,</span> i<span class="token punctuation">.</span>positionWS<span class="token punctuation">.</span>y<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    
+     <span class="token comment">//In DirectX, z/w from [0, 1], and use reversed Z</span>
+    <span class="token comment">//So, it means we aren't adapt the sample for OpenGL platform</span>
+    <span class="token keyword">float</span> depth <span class="token operator">=</span> <span class="token punctuation">(</span>i<span class="token punctuation">.</span>positionCS<span class="token punctuation">.</span>z <span class="token operator">/</span> i<span class="token punctuation">.</span>positionCS<span class="token punctuation">.</span>w<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    
+    <span class="token comment">//get linearEyeDepth which we can using easily</span>
+    <span class="token keyword">float</span> linearEyeDepth <span class="token operator">=</span> <span class="token function">LinearEyeDepth</span><span class="token punctuation">(</span>depth<span class="token punctuation">,</span> _ZBufferParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    float2 scrPos <span class="token operator">=</span> i<span class="token punctuation">.</span>positionSS<span class="token punctuation">.</span>xy <span class="token operator">/</span> i<span class="token punctuation">.</span>positionSS<span class="token punctuation">.</span>w<span class="token punctuation">;</span>
+                    
+    <span class="token comment">//"min(1, 5/linearEyeDepth)" is a curve to adjust viewLightDir.length by distance</span>
+    float3 viewLightDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span><span class="token function">TransformWorldToViewDir</span><span class="token punctuation">(</span>light<span class="token punctuation">.</span>direction<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">/</span> <span class="token function">min</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>posNDCw<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">min</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token operator">/</span> linearEyeDepth<span class="token punctuation">)</span> <span class="token comment">/** heightCorrect*/</span><span class="token punctuation">;</span>
+                    
+     <span class="token comment">//get the final sample point</span>
+    float2 samplingPoint <span class="token operator">=</span> scrPos <span class="token operator">+</span> _HairShadowDistance <span class="token operator">*</span> viewLightDir<span class="token punctuation">.</span>xy<span class="token punctuation">;</span>
+                    
+    <span class="token keyword">float</span> hairDepth <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_HairSoildColor<span class="token punctuation">,</span> sampler_HairSoildColor<span class="token punctuation">,</span> samplingPoint<span class="token punctuation">)</span><span class="token punctuation">.</span>g<span class="token punctuation">;</span><span class="token comment">//调用头发固态纹理ID</span>
+    hairDepth <span class="token operator">=</span> <span class="token function">LinearEyeDepth</span><span class="token punctuation">(</span>hairDepth<span class="token punctuation">,</span> _ZBufferParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    
+     <span class="token comment">//0.01 is bias</span>
+    <span class="token keyword">float</span> depthContrast <span class="token operator">=</span> linearEyeDepth  <span class="token operator">></span> hairDepth <span class="token operator">*</span> heightCorrect <span class="token operator">-</span> <span class="token number">0.01</span> <span class="token operator">?</span> <span class="token number">0</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">//头发深度和现有深度做对比</span>
+
+    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">USED_SHAODWRAMP</span></span>
+    FinalRamp <span class="token operator">*=</span> depthContrast<span class="token punctuation">;</span>
+    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span></span>
+        Lambert <span class="token operator">*=</span> depthContrast<span class="token punctuation">;</span>
+     <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><b>以上就是头发阴影的全部了</b><br />
+<b>最终的主shader所有代码如下</b></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Shader <span class="token string">"Kailu/KailuFukuShader"</span>
+<span class="token punctuation">&#123;</span>
+    Properties
+    <span class="token punctuation">&#123;</span>
+    	<span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>MainTexture<span class="token punctuation">)</span><span class="token punctuation">]</span>
+    	<span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token function">_MainTex</span> <span class="token punctuation">(</span><span class="token string">"MainTex"</span><span class="token punctuation">,</span> <span class="token number">2</span>D<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"white"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+        <span class="token punctuation">[</span>HDR<span class="token punctuation">]</span><span class="token function">_MainColor</span><span class="token punctuation">(</span><span class="token string">"MainColor"</span><span class="token punctuation">,</span>Color<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+        <span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>Shadow<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token function">_ShadowColor</span><span class="token punctuation">(</span><span class="token string">"ShadowColor"</span><span class="token punctuation">,</span> Color<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0.7</span><span class="token punctuation">,</span><span class="token number">0.7</span><span class="token punctuation">,</span><span class="token number">0.7</span><span class="token punctuation">,</span><span class="token number">0.7</span><span class="token punctuation">)</span>
+        <span class="token function">_ShadowRange</span><span class="token punctuation">(</span><span class="token string">"ShadowRange"</span><span class="token punctuation">,</span> <span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0.4</span>
+        <span class="token function">_ShadowSmooth</span><span class="token punctuation">(</span><span class="token string">"ShadowSmooth"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0.2</span>
+        <span class="token punctuation">[</span><span class="token function">Toggle</span><span class="token punctuation">(</span>USED_SHAODWRAMP<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token function">_EnableShaodwRamp</span><span class="token punctuation">(</span><span class="token string">"Enable Shadow Ramp"</span><span class="token punctuation">,</span><span class="token keyword">float</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token function">_ShadowRamp</span><span class="token punctuation">(</span><span class="token string">"Shadow Ramp"</span><span class="token punctuation">,</span><span class="token number">2</span>D<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"white"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+        <span class="token punctuation">[</span><span class="token function">Toggle</span><span class="token punctuation">(</span>RAMP_NOISE<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token function">_EnableShaodwNoise</span><span class="token punctuation">(</span><span class="token string">"Enable Shadow Noise"</span><span class="token punctuation">,</span><span class="token keyword">float</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token function">_ShadowNoiseMap</span><span class="token punctuation">(</span><span class="token string">"Shadow Noise Map"</span><span class="token punctuation">,</span><span class="token number">2</span>D<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"white"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+        <span class="token function">_NoiseLevel</span><span class="token punctuation">(</span><span class="token string">"Noise Level"</span><span class="token punctuation">,</span> <span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">1</span>
+        <span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>HairToFaceShadow<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token function">Toggle</span><span class="token punctuation">(</span>IS_FACE<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token function">_IsFace</span><span class="token punctuation">(</span><span class="token string">"isFace"</span><span class="token punctuation">,</span>Float<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token function">_HairShadowDistance</span><span class="token punctuation">(</span><span class="token string">"HairShadowDistance"</span><span class="token punctuation">,</span>Float<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">1</span>
+        <span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>heightCorrectMask<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token function">_HeightCorrectMax</span> <span class="token punctuation">(</span><span class="token string">"HeightCorrectMax"</span><span class="token punctuation">,</span> <span class="token keyword">float</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">1.6</span>
+        <span class="token function">_HeightCorrectMin</span> <span class="token punctuation">(</span><span class="token string">"HeightCorrectMin"</span><span class="token punctuation">,</span> <span class="token keyword">float</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">1.51</span>
+
+        <span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>Specular<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span>HDR<span class="token punctuation">]</span><span class="token function">_Specular</span><span class="token punctuation">(</span><span class="token string">"SpecularColor"</span><span class="token punctuation">,</span>Color<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">)</span>
+        <span class="token function">_Gloss</span><span class="token punctuation">(</span><span class="token string">"Gloss"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">512</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">20</span>
+        <span class="token function">_SpecularSmooth</span><span class="token punctuation">(</span><span class="token string">"Specular Smooth"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0.1</span>
+        <span class="token function">_SpecularRange</span><span class="token punctuation">(</span><span class="token string">"Specular Range"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token function">Toggle</span><span class="token punctuation">(</span>USED_ANISOTROPIC<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token function">_EnableAnisotropic</span><span class="token punctuation">(</span><span class="token string">"Enable Anisotropic"</span><span class="token punctuation">,</span><span class="token keyword">float</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token comment">//[HDR]_Specular2T("SpecularColor2T",Color) = (1.0,1.0,1.0,1.0)</span>
+        <span class="token comment">//_Specular2TRange("Specular2T Range",Range(0,1)) = 0.2</span>
+        <span class="token comment">//_Specular2TSmooth("Specular2T Smooth",Range(0,1)) = 0.2</span>
+        <span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+
+        <span class="token function">_JitterMap</span><span class="token punctuation">(</span><span class="token string">"Jitter Map"</span><span class="token punctuation">,</span><span class="token number">2</span>D<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"white"</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+        <span class="token function">_Exponent</span><span class="token punctuation">(</span><span class="token string">"Exponent"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">512</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">2</span>
+        <span class="token function">_Strength</span><span class="token punctuation">(</span><span class="token string">"Strength"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">256</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">2</span>
+
+        <span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>Outline<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token function">_Outlinewidth</span><span class="token punctuation">(</span><span class="token string">"Outline Width"</span><span class="token punctuation">,</span> <span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0.2</span>
+        <span class="token function">_OutlineColor</span><span class="token punctuation">(</span><span class="token string">"Outline Color"</span><span class="token punctuation">,</span> Color<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0.5</span><span class="token punctuation">,</span><span class="token number">0.5</span><span class="token punctuation">,</span><span class="token number">0.5</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+        <span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>Fresnel<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token function">_FMin</span><span class="token punctuation">(</span><span class="token string">"Fresnel Min"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0.5</span>
+        <span class="token function">_FMax</span><span class="token punctuation">(</span><span class="token string">"Fresnel Max"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0.6</span>
+        <span class="token punctuation">[</span>HDR<span class="token punctuation">]</span><span class="token function">_FColor</span><span class="token punctuation">(</span><span class="token string">"Fresnel Color"</span><span class="token punctuation">,</span>Color<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">)</span>
+
+        <span class="token punctuation">[</span><span class="token function">Header</span><span class="token punctuation">(</span>Bloom<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token punctuation">[</span><span class="token function">Space</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token function">_BloomPower</span><span class="token punctuation">(</span><span class="token string">"Bloom Power"</span><span class="token punctuation">,</span><span class="token function">Range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">1</span>
+        <span class="token punctuation">[</span>HDR<span class="token punctuation">]</span><span class="token function">_BloomColor</span><span class="token punctuation">(</span><span class="token string">"Bloom Color"</span><span class="token punctuation">,</span>Color<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">,</span><span class="token number">1.0</span><span class="token punctuation">)</span>
+
+        
+
+
+    <span class="token punctuation">&#125;</span>
+    SubShader
+    <span class="token punctuation">&#123;</span>
+        Tags <span class="token punctuation">&#123;</span> <span class="token string">"RenderPipeline"</span> <span class="token operator">=</span> <span class="token string">"UniversalPipeline"</span> <span class="token string">"RenderType"</span> <span class="token operator">=</span> <span class="token string">"Opaque"</span> <span class="token string">"Queue"</span> <span class="token operator">=</span> <span class="token string">"Geometry"</span> <span class="token punctuation">&#125;</span>
+        
+        HLSLINCLUDE 
+
+        <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"</span></span>
+        <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"</span></span>
+        <span class="token function">TEXTURE2D</span><span class="token punctuation">(</span>_MainTex<span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token function">SAMPLER</span><span class="token punctuation">(</span>sampler_MainTex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">TEXTURE2D</span><span class="token punctuation">(</span>_ShadowRamp<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token function">SAMPLER</span><span class="token punctuation">(</span>sampler_ShadowRamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">TEXTURE2D</span><span class="token punctuation">(</span>_ShadowNoiseMap<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token function">SAMPLER</span><span class="token punctuation">(</span>sampler_ShadowNoiseMap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">TEXTURE2D</span><span class="token punctuation">(</span>_JitterMap<span class="token punctuation">)</span><span class="token punctuation">;</span>         <span class="token function">SAMPLER</span><span class="token punctuation">(</span>sampler_JitterMap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">TEXTURE2D</span><span class="token punctuation">(</span>_HairSoildColor<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token function">SAMPLER</span><span class="token punctuation">(</span>sampler_HairSoildColor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">CBUFFER_START</span><span class="token punctuation">(</span>UnityPerMaterial<span class="token punctuation">)</span>
+
+        float4 _MainTex_ST<span class="token punctuation">;</span>
+        float4 _MainColor<span class="token punctuation">;</span>
+        float4 _ShadowColor<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _ShadowRange<span class="token punctuation">;</span>
+        float4 _ShadowRamp_ST<span class="token punctuation">;</span>
+        float4 _ShadowNoiseMap_ST<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _NoiseLevel<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _Outlinewidth<span class="token punctuation">;</span>
+        float4 _OutlineColor<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _ShadowSmooth<span class="token punctuation">;</span>
+        float4 _Specular<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _Gloss<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _SpecularSmooth<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _SpecularRange<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _FMin<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _FMax<span class="token punctuation">;</span>
+        float4 _FColor<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _BloomPower<span class="token punctuation">;</span>
+        float4 _BloomColor<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _HeightCorrectMax<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _HeightCorrectMin<span class="token punctuation">;</span>
+        <span class="token comment">//float4 _Specular2T;</span>
+        <span class="token comment">//float _Specular2TRange;</span>
+        <span class="token keyword">float</span> _Exponent<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _Strength<span class="token punctuation">;</span>
+        <span class="token comment">//float _Specular2TSmooth;</span>
+        float4 _JitterMap_ST<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _HairShadowDistance<span class="token punctuation">;</span>
+        <span class="token comment">//Toggle</span>
+        <span class="token keyword">float</span> _EnableShaodwRamp<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _EnableShaodwNoise<span class="token punctuation">;</span>
+        <span class="token keyword">float</span> _EnableAnisotropic<span class="token punctuation">;</span>
+
+
+        CBUFFER_END
+        
+        <span class="token keyword">struct</span> <span class="token class-name">a2v</span>
+        <span class="token punctuation">&#123;</span>
+            float4 positionOS <span class="token operator">:</span> POSITION<span class="token punctuation">;</span>
+            float3 normalOS <span class="token operator">:</span> NORMAL<span class="token punctuation">;</span>
+            float4 tangentOS <span class="token operator">:</span> TANGENT<span class="token punctuation">;</span>
+            float2 uv <span class="token operator">:</span> TEXCOORD0<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">struct</span> <span class="token class-name">v2f</span>
+        <span class="token punctuation">&#123;</span>
+            float4 positionCS <span class="token operator">:</span> SV_POSITION<span class="token punctuation">;</span>
+            float2 uv <span class="token operator">:</span> TEXCOORD0<span class="token punctuation">;</span>
+            float3 positionWS <span class="token operator">:</span> TEXCOORD1<span class="token punctuation">;</span>
+            float3 positionVS <span class="token operator">:</span> TEXCOORD2<span class="token punctuation">;</span>
+            float3 normalWS <span class="token operator">:</span> TEXCOORD3<span class="token punctuation">;</span>
+            float3 tangentWS <span class="token operator">:</span> TEXCOORD4<span class="token punctuation">;</span>
+            float3 BittangentWS <span class="token operator">:</span> TEXCOORD5<span class="token punctuation">;</span>
+
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">IS_FACE</span></span>
+                    float4 positionSS<span class="token operator">:</span> TEXCOORD6<span class="token punctuation">;</span>
+                    <span class="token keyword">float</span> posNDCw<span class="token operator">:</span> TEXCOORD7<span class="token punctuation">;</span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+        float3 <span class="token function">ShitftTanget</span><span class="token punctuation">(</span>float3 T<span class="token punctuation">,</span>float3 N<span class="token punctuation">,</span> <span class="token keyword">float</span> shift<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            float3 shiftT <span class="token operator">=</span> T <span class="token operator">+</span> shift <span class="token operator">*</span> N<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token function">normalize</span><span class="token punctuation">(</span>shiftT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">float</span> <span class="token function">StrandSpecular</span><span class="token punctuation">(</span>float3 T<span class="token punctuation">,</span> float3 V<span class="token punctuation">,</span> float3 L<span class="token punctuation">,</span> <span class="token keyword">float</span> exponent<span class="token punctuation">,</span> <span class="token keyword">float</span> strength<span class="token punctuation">)</span><span class="token comment">//头发各向异性</span>
+        <span class="token punctuation">&#123;</span>
+            float3 H <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>L<span class="token operator">+</span>V<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">float</span> dotTH <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>T<span class="token punctuation">,</span>L<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">float</span> sinTH <span class="token operator">=</span> <span class="token function">sqrt</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token operator">-</span>dotTH<span class="token operator">*</span>dotTH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">float</span> dirAtten <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1.0</span> <span class="token punctuation">,</span> <span class="token number">0.0</span><span class="token punctuation">,</span> dotTH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> dirAtten <span class="token operator">*</span> <span class="token function">pow</span><span class="token punctuation">(</span>sinTH <span class="token punctuation">,</span> exponent<span class="token punctuation">)</span>  <span class="token operator">*</span> strength<span class="token punctuation">;</span>
+
+        <span class="token punctuation">&#125;</span>
+
+        ENDHLSL
+        
+        Pass
+        <span class="token punctuation">&#123;</span>
+            Cull Back
+            Name <span class="token string">"BASE_COLOR_PASS"</span>
+            Tags<span class="token punctuation">&#123;</span><span class="token string">"LightMode"</span> <span class="token operator">=</span> <span class="token string">"UniversalForward"</span><span class="token punctuation">&#125;</span>
+            
+
+            HLSLPROGRAM
+
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">vertex vert </span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">fragment frag</span></span>
+            
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">multi_compile _ _MAIN_LIGHT_SHADOWS</span><span class="token comment">//想让物体接收其他着色器的阴影，需要声明此关键字  Lighting.hlsl</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">multi_compile_fragment _ _SHADOWS_SOFT</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">multi_compile_fog</span></span>
+            
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature_local_fragment RAMP_NOISE</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature_local_fragment USED_SHAODWRAMP</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature_local_fragment USED_ANISOTROPIC</span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature IS_FACE</span></span>
+            <span class="token comment">//#pragma shader_feature_local_fragment ENABLE_FACE_SHADOW_MAP</span>
+            <span class="token comment">//#pragma shader_feature_local_fragment ENABLE_RAMP_SHADOW</span>
+
+            v2f <span class="token function">vert</span><span class="token punctuation">(</span>a2v v<span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                v2f o<span class="token punctuation">;</span>
+                VertexPositionInputs positionInputs <span class="token operator">=</span> <span class="token function">GetVertexPositionInputs</span><span class="token punctuation">(</span>v<span class="token punctuation">.</span>positionOS<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>positionCS <span class="token operator">=</span> positionInputs<span class="token punctuation">.</span>positionCS<span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>positionWS <span class="token operator">=</span> positionInputs<span class="token punctuation">.</span>positionWS<span class="token punctuation">;</span>
+
+                VertexNormalInputs tbn <span class="token operator">=</span> <span class="token function">GetVertexNormalInputs</span><span class="token punctuation">(</span>v<span class="token punctuation">.</span>normalOS<span class="token punctuation">,</span>v<span class="token punctuation">.</span>tangentOS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>normalWS <span class="token operator">=</span> tbn<span class="token punctuation">.</span>normalWS<span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>tangentWS <span class="token operator">=</span> tbn<span class="token punctuation">.</span>tangentWS<span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>BittangentWS <span class="token operator">=</span> tbn<span class="token punctuation">.</span>bitangentWS<span class="token punctuation">;</span>
+                o<span class="token punctuation">.</span>uv <span class="token operator">=</span> v<span class="token punctuation">.</span>uv<span class="token punctuation">;</span>
+
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">IS_FACE</span></span>
+                    o<span class="token punctuation">.</span>posNDCw <span class="token operator">=</span> positionInputs<span class="token punctuation">.</span>positionNDC<span class="token punctuation">.</span>w<span class="token punctuation">;</span>
+                    o<span class="token punctuation">.</span>positionSS <span class="token operator">=</span> <span class="token function">ComputeScreenPos</span><span class="token punctuation">(</span>positionInputs<span class="token punctuation">.</span>positionCS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+                <span class="token keyword">return</span> o <span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+
+            float4 <span class="token function">frag</span><span class="token punctuation">(</span>v2f i<span class="token punctuation">)</span> <span class="token operator">:</span> SV_TARGET
+            <span class="token punctuation">&#123;</span>
+                float3 worldPos <span class="token operator">=</span> i<span class="token punctuation">.</span>positionWS<span class="token punctuation">;</span>
+                float3 viewPos <span class="token operator">=</span> i<span class="token punctuation">.</span>positionVS<span class="token punctuation">;</span>
+                float3 worldNormal <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>normalWS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 worldTangent <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>tangentWS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 worldBittangent <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>BittangentWS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+                float4 shadowCoords <span class="token operator">=</span> <span class="token function">TransformWorldToShadowCoord</span><span class="token punctuation">(</span>worldPos<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Light light <span class="token operator">=</span> <span class="token function">GetMainLight</span><span class="token punctuation">(</span>shadowCoords<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                float3 viewDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>_WorldSpaceCameraPos<span class="token punctuation">.</span>xyz <span class="token operator">-</span> worldPos<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                float3 lightDirWS <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>light<span class="token punctuation">.</span>direction<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 ShadowColor <span class="token operator">=</span> light<span class="token punctuation">.</span>shadowAttenuation <span class="token operator">+</span> _ShadowColor<span class="token punctuation">.</span>xyz<span class="token punctuation">;</span>
+
+                float4 MainTexture <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_MainTex<span class="token punctuation">,</span> sampler_MainTex<span class="token punctuation">,</span> i<span class="token punctuation">.</span>uv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//float4 shadowRampMap = SAMPLE_TEXTURE2D(_ShadowRamp,sampler_ShadowRamp);</span>
+                float4 ShadowNoiseMap <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_ShadowNoiseMap<span class="token punctuation">,</span> sampler_ShadowNoiseMap<span class="token punctuation">,</span>  i<span class="token punctuation">.</span>uv <span class="token operator">*</span> _ShadowNoiseMap_ST<span class="token punctuation">.</span>xy <span class="token operator">+</span> _ShadowNoiseMap_ST<span class="token punctuation">.</span>zw<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                
+                <span class="token keyword">float</span> halfLambert <span class="token operator">=</span> <span class="token number">0.5</span> <span class="token operator">*</span> <span class="token function">dot</span><span class="token punctuation">(</span>worldNormal <span class="token punctuation">,</span> lightDirWS<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">0.5</span><span class="token punctuation">;</span>
+                <span class="token keyword">float</span> Lambert <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> _ShadowSmooth<span class="token punctuation">,</span> halfLambert <span class="token operator">-</span> _ShadowRange<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">float</span> FinalRamp <span class="token operator">=</span> <span class="token number">1.0</span><span class="token punctuation">;</span>
+
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">USED_SHAODWRAMP</span></span>
+
+                <span class="token keyword">float</span> rampValue <span class="token operator">=</span> Lambert<span class="token punctuation">;</span>
+
+                    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">RAMP_NOISE</span></span>
+
+                    rampValue <span class="token operator">+=</span>ShadowNoiseMap<span class="token punctuation">.</span>x <span class="token operator">*</span> _NoiseLevel <span class="token operator">*</span> rampValue<span class="token punctuation">;</span><span class="token comment">//###用ranmpvalume相加后 白色的部分会直接全白 阴影交界的部分会随着噪波有一定变化 以此实现只有边缘交接有噪波效果</span>
+
+                    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+                <span class="token keyword">float</span> Ramp <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_ShadowRamp<span class="token punctuation">,</span> sampler_ShadowRamp<span class="token punctuation">,</span> <span class="token function">float2</span><span class="token punctuation">(</span><span class="token function">saturate</span><span class="token punctuation">(</span>rampValue<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0.01</span><span class="token punctuation">)</span> <span class="token operator">*</span> _ShadowRamp_ST<span class="token punctuation">.</span>xy <span class="token operator">+</span> _ShadowRamp_ST<span class="token punctuation">.</span>zw<span class="token punctuation">)</span><span class="token punctuation">.</span>x<span class="token punctuation">;</span><span class="token comment">//因为不知道为什么 要做一次偏移</span>
+
+                FinalRamp <span class="token operator">=</span> <span class="token function">saturate</span><span class="token punctuation">(</span>Ramp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+                
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">IS_FACE</span></span>
+
+                    <span class="token keyword">float</span> heightCorrect <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span>_HeightCorrectMax<span class="token punctuation">,</span> _HeightCorrectMin<span class="token punctuation">,</span> i<span class="token punctuation">.</span>positionWS<span class="token punctuation">.</span>y<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    
+                    <span class="token comment">//In DirectX, z/w from [0, 1], and use reversed Z</span>
+                    <span class="token comment">//So, it means we aren't adapt the sample for OpenGL platform</span>
+                    <span class="token keyword">float</span> depth <span class="token operator">=</span> <span class="token punctuation">(</span>i<span class="token punctuation">.</span>positionCS<span class="token punctuation">.</span>z <span class="token operator">/</span> i<span class="token punctuation">.</span>positionCS<span class="token punctuation">.</span>w<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    
+                    <span class="token comment">//get linearEyeDepth which we can using easily</span>
+                    <span class="token keyword">float</span> linearEyeDepth <span class="token operator">=</span> <span class="token function">LinearEyeDepth</span><span class="token punctuation">(</span>depth<span class="token punctuation">,</span> _ZBufferParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    float2 scrPos <span class="token operator">=</span> i<span class="token punctuation">.</span>positionSS<span class="token punctuation">.</span>xy <span class="token operator">/</span> i<span class="token punctuation">.</span>positionSS<span class="token punctuation">.</span>w<span class="token punctuation">;</span>
+                    
+                    <span class="token comment">//"min(1, 5/linearEyeDepth)" is a curve to adjust viewLightDir.length by distance</span>
+                    float3 viewLightDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span><span class="token function">TransformWorldToViewDir</span><span class="token punctuation">(</span>light<span class="token punctuation">.</span>direction<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">/</span> <span class="token function">min</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>posNDCw<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">min</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">5</span> <span class="token operator">/</span> linearEyeDepth<span class="token punctuation">)</span> <span class="token comment">/** heightCorrect*/</span><span class="token punctuation">;</span>
+                    
+                    <span class="token comment">//get the final sample point</span>
+                    float2 samplingPoint <span class="token operator">=</span> scrPos <span class="token operator">+</span> _HairShadowDistance <span class="token operator">*</span> viewLightDir<span class="token punctuation">.</span>xy<span class="token punctuation">;</span>
+                    
+                    <span class="token keyword">float</span> hairDepth <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_HairSoildColor<span class="token punctuation">,</span> sampler_HairSoildColor<span class="token punctuation">,</span> samplingPoint<span class="token punctuation">)</span><span class="token punctuation">.</span>g<span class="token punctuation">;</span><span class="token comment">//调用头发固态纹理ID</span>
+                    hairDepth <span class="token operator">=</span> <span class="token function">LinearEyeDepth</span><span class="token punctuation">(</span>hairDepth<span class="token punctuation">,</span> _ZBufferParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    
+                    <span class="token comment">//0.01 is bias</span>
+                    <span class="token keyword">float</span> depthContrast <span class="token operator">=</span> linearEyeDepth  <span class="token operator">></span> hairDepth <span class="token operator">*</span> heightCorrect <span class="token operator">-</span> <span class="token number">0.01</span> <span class="token operator">?</span> <span class="token number">0</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">//头发深度和现有深度做对比</span>
+
+                    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">USED_SHAODWRAMP</span></span>
+                    FinalRamp <span class="token operator">*=</span> depthContrast<span class="token punctuation">;</span>
+                    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span></span>
+                    Lambert <span class="token operator">*=</span> depthContrast<span class="token punctuation">;</span>
+                    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+                float3 diffuse <span class="token operator">=</span> <span class="token function">lerp</span><span class="token punctuation">(</span>MainTexture<span class="token punctuation">.</span>xyz <span class="token operator">*</span> _ShadowColor<span class="token punctuation">.</span>xyz<span class="token punctuation">,</span> MainTexture<span class="token punctuation">.</span>xyz<span class="token punctuation">,</span> Lambert<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">USED_SHAODWRAMP</span></span>
+
+                diffuse <span class="token operator">=</span> <span class="token function">lerp</span><span class="token punctuation">(</span>MainTexture<span class="token punctuation">.</span>xyz <span class="token operator">*</span> _ShadowColor<span class="token punctuation">.</span>xyz<span class="token punctuation">,</span> MainTexture<span class="token punctuation">.</span>xyz<span class="token punctuation">,</span> FinalRamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+                <span class="token comment">//Spec</span>
+                float3 HalfViewDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>viewDir <span class="token operator">+</span> lightDirWS<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 Specular1st <span class="token operator">=</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token function">dot</span><span class="token punctuation">(</span>worldNormal<span class="token punctuation">,</span>HalfViewDir<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>_Gloss<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 Specular <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>_SpecularSmooth<span class="token punctuation">,</span>Specular1st<span class="token operator">-</span>_SpecularRange<span class="token punctuation">)</span> <span class="token operator">*</span> MainTexture<span class="token punctuation">.</span>xyz<span class="token punctuation">;</span>
+
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">USED_ANISOTROPIC</span></span>
+
+                    <span class="token comment">//float3 Specular2T = smoothstep(0, _Specular2TSmooth,Specular1st - _Specular2TRange) * _Specular2T.xyz;</span>
+                    float4 JitterMap <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_JitterMap<span class="token punctuation">,</span>sampler_JitterMap<span class="token punctuation">,</span> i<span class="token punctuation">.</span>uv <span class="token operator">*</span> _JitterMap_ST<span class="token punctuation">.</span>xy <span class="token operator">+</span> _JitterMap_ST<span class="token punctuation">.</span>zw<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    worldBittangent <span class="token operator">=</span> <span class="token function">ShitftTanget</span><span class="token punctuation">(</span>worldBittangent<span class="token punctuation">,</span>worldNormal<span class="token punctuation">,</span>JitterMap<span class="token punctuation">.</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">float</span> JitterSpecular <span class="token operator">=</span> <span class="token function">StrandSpecular</span><span class="token punctuation">(</span>worldBittangent<span class="token punctuation">,</span>viewDir <span class="token punctuation">,</span>lightDirWS <span class="token punctuation">,</span>_Exponent<span class="token punctuation">,</span>_Strength<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    Specular <span class="token operator">=</span> <span class="token function">saturate</span><span class="token punctuation">(</span> JitterSpecular <span class="token operator">*</span> Lambert<span class="token punctuation">)</span><span class="token operator">*</span> MainTexture<span class="token punctuation">.</span>xyz <span class="token operator">*</span> _Specular<span class="token punctuation">;</span>
+
+                <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+
+                <span class="token keyword">float</span> Fresnel <span class="token operator">=</span>  <span class="token number">1.0</span> <span class="token operator">-</span> <span class="token function">saturate</span><span class="token punctuation">(</span><span class="token function">dot</span><span class="token punctuation">(</span>viewDir<span class="token punctuation">,</span>worldNormal<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">float</span> FresnelRange <span class="token operator">=</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span>_FMin<span class="token punctuation">,</span>_FMax<span class="token punctuation">,</span>Fresnel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 FinalFresnel <span class="token operator">=</span> FresnelRange <span class="token operator">*</span> _FColor<span class="token punctuation">.</span>xyz<span class="token punctuation">;</span>
+
+                <span class="token keyword">float</span> BloomRange <span class="token operator">=</span> FinalFresnel<span class="token punctuation">.</span>x <span class="token operator">+</span> Specular<span class="token punctuation">.</span>x<span class="token punctuation">;</span>
+                float3 Bloom <span class="token operator">=</span> BloomRange <span class="token operator">*</span> _BloomPower <span class="token operator">*</span> _MainLightColor<span class="token punctuation">.</span>xyz <span class="token operator">*</span>  _BloomColor<span class="token punctuation">.</span>xyz <span class="token operator">*</span> MainTexture<span class="token punctuation">.</span>xyz<span class="token punctuation">;</span>
+
+
+                float3 FinalColor <span class="token operator">=</span> <span class="token punctuation">(</span>diffuse <span class="token operator">*</span> _MainColor<span class="token punctuation">.</span>xyz <span class="token operator">+</span> Specular <span class="token operator">*</span>  _Specular<span class="token punctuation">.</span>xyz  <span class="token operator">+</span> FinalFresnel <span class="token operator">*</span> _MainColor<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span> <span class="token operator">*</span> _MainLightColor<span class="token punctuation">.</span>xyz <span class="token operator">+</span> Bloom<span class="token punctuation">;</span>
+                <span class="token comment">//float3 FinalColor =FinalRamp.xxx;</span>
+
+                <span class="token keyword">return</span> <span class="token function">float4</span><span class="token punctuation">(</span>FinalColor<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+            <span class="token punctuation">&#125;</span>
+            ENDHLSL
+
+
+
+        <span class="token punctuation">&#125;</span>
+
+        Pass
+        <span class="token punctuation">&#123;</span>
+            Cull Front
+            Name <span class="token string">"Outline"</span>
+            <span class="token comment">//Tags&#123;&#125;</span>
+
+            HLSLPROGRAM
+
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">vertex vertOutline </span></span>
+            <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">fragment fragOutline</span></span>
+            
+
+
+            float4 <span class="token function">vertOutline</span><span class="token punctuation">(</span>float4 positionOS <span class="token operator">:</span> POSITION <span class="token punctuation">,</span> float3 normal <span class="token operator">:</span> NORMAL <span class="token punctuation">,</span> float3 tangent <span class="token operator">:</span> TANGENT<span class="token punctuation">)</span> <span class="token operator">:</span> SV_POSITION
+            <span class="token punctuation">&#123;</span>
+                VertexPositionInputs positionInputs <span class="token operator">=</span> <span class="token function">GetVertexPositionInputs</span><span class="token punctuation">(</span>positionOS<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float4 positionCS <span class="token operator">=</span> positionInputs<span class="token punctuation">.</span>positionCS<span class="token punctuation">;</span>
+                VertexNormalInputs tbn <span class="token operator">=</span> <span class="token function">GetVertexNormalInputs</span><span class="token punctuation">(</span>normal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 normalWS <span class="token operator">=</span> tbn<span class="token punctuation">.</span>normalWS<span class="token punctuation">;</span>
+                float3 normalOS <span class="token operator">=</span> normal<span class="token punctuation">;</span>
+                float3 normalVS <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token punctuation">(</span>float3x3<span class="token punctuation">)</span>UNITY_MATRIX_IT_MV<span class="token punctuation">,</span> normal<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 ndcNormal<span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token punctuation">(</span>float3x3<span class="token punctuation">)</span>UNITY_MATRIX_P<span class="token punctuation">,</span>normalVS<span class="token punctuation">)</span><span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float4 nearUpperRight <span class="token operator">=</span> <span class="token function">mul</span><span class="token punctuation">(</span>unity_CameraInvProjection<span class="token punctuation">,</span> <span class="token function">float4</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> UNITY_NEAR_CLIP_VALUE<span class="token punctuation">,</span> _ProjectionParams<span class="token punctuation">.</span>y<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//摄像机投影矩阵的逆矩阵和近裁切</span>
+                <span class="token keyword">float</span> aspect <span class="token operator">=</span> <span class="token function">abs</span><span class="token punctuation">(</span>nearUpperRight<span class="token punctuation">.</span>y <span class="token operator">/</span> nearUpperRight<span class="token punctuation">.</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//计算屏幕的长宽比</span>
+                ndcNormal<span class="token punctuation">.</span>x <span class="token operator">*=</span> aspect<span class="token punctuation">;</span>
+                positionCS<span class="token punctuation">.</span>xy <span class="token operator">+=</span> <span class="token punctuation">(</span><span class="token number">0.01</span> <span class="token operator">*</span> _Outlinewidth  <span class="token operator">*</span> positionCS<span class="token punctuation">.</span>w<span class="token punctuation">)</span> <span class="token operator">*</span> ndcNormal<span class="token punctuation">.</span>xy<span class="token punctuation">;</span>
+                <span class="token keyword">return</span> positionCS<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+            float4 <span class="token function">fragOutline</span><span class="token punctuation">(</span>a2v i<span class="token punctuation">)</span> <span class="token operator">:</span> COLOR 
+            <span class="token punctuation">&#123;</span>
+                float4 MainTexture <span class="token operator">=</span> <span class="token function">SAMPLE_TEXTURE2D</span><span class="token punctuation">(</span>_MainTex<span class="token punctuation">,</span> sampler_MainTex<span class="token punctuation">,</span> i<span class="token punctuation">.</span>uv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                float3 OutlineColor <span class="token operator">=</span> _OutlineColor<span class="token punctuation">.</span>xyz <span class="token operator">*</span> MainTexture<span class="token punctuation">.</span>xyz<span class="token punctuation">;</span>
+                <span class="token keyword">return</span> <span class="token function">float4</span><span class="token punctuation">(</span>OutlineColor<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            ENDHLSL
+
+            
+        <span class="token punctuation">&#125;</span>
+
+        UsePass <span class="token string">"Universal Render Pipeline/Lit/ShadowCaster"</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后由于最开始的初衷是因为原神的卡通渲染实在是太秀了，也一并研究了一下他们的卡通材质，<br />
+主要是使用阈值来实现脸部的阴影过渡，光照贴图来区分身上不同材质的高光，用了很多层RAMP<br />
+图来实现身上阴影过渡在不同环境中的变化。<br />
+最后参照着一些资料，写出了个大概的shader。<br />
+<b>备份保存在这里</b><br />
+<a target="_blank" rel="noopener" href="https://github.com/AfterDuang/ToonRenderingLearn2021_1">https://github.com/AfterDuang/ToonRenderingLearn2021_1</a></p>
+<img src="/images/UnityCharToonShader/Pre.gif" width="100%" height="100%" style="zoom:200%" loading="lazy">
+<blockquote>
+<p>Ref:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/232450616">https://zhuanlan.zhihu.com/p/232450616</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/111633226">https://zhuanlan.zhihu.com/p/111633226</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/98948117">https://zhuanlan.zhihu.com/p/98948117</a></li>
+<li>Unitetokyo2018-mihoyo Technical Director</li>
+<li><a target="_blank" rel="noopener" href="https://www.freesion.com/article/3303259541/">https://www.freesion.com/article/3303259541/</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.0/manual/urp-renderer-feature.html">https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.0/manual/urp-renderer-feature.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2021.1/Manual/scriptable-render-pipeline-introduction.html">https://docs.unity.cn/cn/2021.1/Manual/scriptable-render-pipeline-introduction.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.html">https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/373273390">https://zhuanlan.zhihu.com/p/373273390</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/272495627">https://zhuanlan.zhihu.com/p/272495627</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/360229590">https://zhuanlan.zhihu.com/p/360229590</a></li>
+</ul>
+</blockquote>
+</div><ul class="post-copyright"><li class="post-copyright-author"><strong>Post author: </strong>MGCJの拖拉机</li><li class="post-copyright-link"><strong>Post link: </strong><a href="http://example.com/2021/06/07/Unity/UnityShader/UnityCharToonShaderPreview/" title="Unity角色卡通渲染">http://example.com/2021/06/07/Unity/UnityShader/UnityCharToonShaderPreview/</a></li><li class="post-copyright-license"><strong>Copyright Notice: </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> unless otherwise stated.</li></ul></section></article><div class="post-nav"><div class="post-nav-item"></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/05/25/Houdini/PDGLInkUnity/" rel="next" title="PDG FORM UNITY记录"><span class="post-nav-text">PDG FORM UNITY记录</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>这里是哪里呢？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2021 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> MGCJの拖拉机</span></div><div class="powered"><span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> v5.4.0</span><span class="footer-separator">|</span><span>Theme - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.6.1</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#7ECCCD" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="Search"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="Searching..." value=""></div><div id="local-search-result"></div></div></div></body></html>
