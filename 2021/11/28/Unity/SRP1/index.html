@@ -1,0 +1,720 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#7ECCCD"><meta name="author" content="MGCJの拖拉机"><meta name="copyright" content="MGCJの拖拉机"><meta name="generator" content="Hexo 5.4.0"><meta name="theme" content="hexo-theme-yun"><title>Unity_SRP自定义渲染管线学习1 | 柚叶的藏宝阁</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.24/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_j5gk85dg4pf.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+});
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#7ECCCD"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"example.com","root":"/","title":"柚叶的藏宝阁","version":"1.6.1","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="Unity使用SRP创建自定义渲染管线 最近有想法深入了解一下管线，所以就研究一下Unity的自定义渲染管线，也加深一下自己对 管线的理解。也提升下自己那么一丢丢的开发能力。 此文章包括以下内容：   什么是SRP可编程渲染管线 创建一个简单的自定义渲染管线">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity_SRP自定义渲染管线学习1">
+<meta property="og:url" content="http://example.com/2021/11/28/Unity/SRP1/index.html">
+<meta property="og:site_name" content="柚叶的藏宝阁">
+<meta property="og:description" content="Unity使用SRP创建自定义渲染管线 最近有想法深入了解一下管线，所以就研究一下Unity的自定义渲染管线，也加深一下自己对 管线的理解。也提升下自己那么一丢丢的开发能力。 此文章包括以下内容：   什么是SRP可编程渲染管线 创建一个简单的自定义渲染管线">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/SRP1/GoingHelp.jpg">
+<meta property="og:image" content="http://example.com/images/SRP1/Help1.png">
+<meta property="og:image" content="http://example.com/images/SRP1/NewAss.png">
+<meta property="og:image" content="http://example.com/images/SRP1/DebugPram.png">
+<meta property="og:image" content="http://example.com/images/SRP1/DrawSkyBox.png">
+<meta property="og:image" content="http://example.com/images/SRP1/SROShaderPass.png">
+<meta property="og:image" content="http://example.com/images/SRP1/SRP_Batcher_loop.png">
+<meta property="og:image" content="http://example.com/images/SRP1/CamRender1.png">
+<meta property="og:image" content="http://example.com/images/SRP1/CamRender2.png">
+<meta property="og:image" content="http://example.com/images/SRP1/CamRender3.png">
+<meta property="og:image" content="http://example.com/images/SRP1/DrawGizmos.png">
+<meta property="og:image" content="http://example.com/images/SRP1/LightDA.png">
+<meta property="og:image" content="http://example.com/images/SRP1/ENDING.gif">
+<meta property="article:published_time" content="2021-11-28T11:12:57.272Z">
+<meta property="article:modified_time" content="2022-02-15T08:09:55.250Z">
+<meta property="article:author" content="MGCJの拖拉机">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/SRP1/GoingHelp.jpg"><script src="/js/ui/mode.js"></script></head><body><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="Table of Contents"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="Overview"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info mickey-mouse"><a class="site-author-avatar" href="/about/" title="MGCJの拖拉机"><img width="96" loading="lazy" src="/images/HeadImage.png" alt="MGCJの拖拉机"></a><div class="site-author-name"><a href="/about/">MGCJの拖拉机</a></div><span class="site-name">柚叶的藏宝阁</span><sub class="site-subtitle">柚叶</sub><div class="site-desciption">纸片人那么薄，叠起来才有厚度</div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="Home"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="Archives"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">11</span></a></div><div class="site-state-item"><a href="/categories/" title="Categories"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">6</span></a></div><div class="site-state-item"><a href="/tags/" title="Tags"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">11</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=EStUoGjIJMWW_7e7vKZWScpdR0xyUwip&amp;noverify=0#" title="QQ" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/AfterDuang" title="GitHub" target="_blank" style="color:#181717"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:icesmall@outlook.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=263439846" title="网易云音乐" target="_blank" style="color:#C10D0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/tuo-la-ji-35-56" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/19656307" title="哔哩哔哩动画" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a><a class="links-item hty-icon-button" href="/girls/" title="喜欢的女孩子" style="color:hotpink"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-women-line"></use></svg></a><a class="links-item hty-icon-button" href="/myweb/" title="好用的网站" style="color:undefined"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#bunity%E4%BD%BF%E7%94%A8srp%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BFb"><span class="toc-number">1.</span> <span class="toc-text"> Unity使用SRP创建自定义渲染管线</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BFsrpb"><span class="toc-number">1.1.</span> <span class="toc-text"> 什么是可编程渲染管线（SRP）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E5%88%9B%E5%BB%BA%E5%9F%BA%E6%9C%AC%E7%9A%84%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E4%B8%BB%E4%BD%93srpb"><span class="toc-number">1.2.</span> <span class="toc-text"> 创建基本的可编程渲染管线主体（SRP）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E5%88%9B%E5%BB%BA%E5%8F%AF%E9%85%8D%E7%BD%AE%E7%9A%84%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%AE%9E%E4%BE%8Bsrpb"><span class="toc-number">1.3.</span> <span class="toc-text"> 创建可配置的可编程渲染管线实例（SRP）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E8%AE%BE%E7%BD%AE%E6%BF%80%E6%B4%BB%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E7%9A%84%E5%9F%BA%E7%A1%80%E5%8A%9F%E8%83%BDsrpb"><span class="toc-number">1.4.</span> <span class="toc-text"> 设置激活可编程渲染管线的基础功能（SRP）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E7%BB%98%E5%88%B6%E4%B8%80%E4%B8%AA%E5%A4%A9%E7%A9%BA%E7%9B%92b"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 绘制一个天空盒</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E8%AE%BE%E7%BD%AE%E5%91%BD%E4%BB%A4%E7%BC%93%E5%86%B2%E5%8C%BAb"><span class="toc-number">1.4.2.</span> <span class="toc-text"> 设置命令缓冲区</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E8%AE%BE%E7%BD%AE%E5%89%94%E9%99%A4b"><span class="toc-number">1.4.3.</span> <span class="toc-text"> 设置剔除</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E6%B8%B2%E6%9F%93%E5%87%BA%E6%B2%A1%E6%9C%89%E9%98%B4%E5%BD%B1%E7%9A%84%E5%87%A0%E4%BD%95%E4%BD%93b"><span class="toc-number">1.4.4.</span> <span class="toc-text"> 渲染出没有阴影的几何体</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E7%BB%98%E5%88%B6%E9%94%99%E8%AF%AF%E6%88%96%E6%97%A7%E7%89%88%E7%9A%84%E7%9D%80%E8%89%B2%E5%99%A8b"><span class="toc-number">1.4.5.</span> <span class="toc-text"> 绘制错误或旧版的着色器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#bgizmosb"><span class="toc-number">1.4.6.</span> <span class="toc-text"> Gizmos</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b%E7%BB%99%E5%9C%BA%E6%99%AF%E6%89%93%E5%85%89b"><span class="toc-number">1.4.7.</span> <span class="toc-text"> 给场景打光！</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b%E7%BB%93%E8%AF%ADb"><span class="toc-number">1.5.</span> <span class="toc-text"> 结语</span></a></li></ol></li></ol></div></div></div><div class="tag-cloud"><div class="tag-cloud-tags"><a href="/tags/Blender/" style="font-size: 12px; color: #0e1926">Blender</a> <a href="/tags/Game/" style="font-size: 24px; color: #0e1926">Game</a> <a href="/tags/HEXO/" style="font-size: 12px; color: #0e1926">HEXO</a> <a href="/tags/Houdini/" style="font-size: 18px; color: #0e1926">Houdini</a> <a href="/tags/MarkDown/" style="font-size: 12px; color: #0e1926">MarkDown</a> <a href="/tags/None/" style="font-size: 12px; color: #0e1926">None</a> <a href="/tags/PDG/" style="font-size: 18px; color: #0e1926">PDG</a> <a href="/tags/Rendering/" style="font-size: 18px; color: #0e1926">Rendering</a> <a href="/tags/Shader/" style="font-size: 24px; color: #0e1926">Shader</a> <a href="/tags/Unity/" style="font-size: 30px; color: #0e1926">Unity</a> <a href="/tags/%E8%AE%B0%E5%BD%95/" style="font-size: 12px; color: #0e1926">记录</a></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="http://example.com/2021/11/28/Unity/SRP1/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="MGCJの拖拉机"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="柚叶的藏宝阁"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Unity_SRP自定义渲染管线学习1</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="Created: 2021-11-28 19:12:57" itemprop="dateCreated datePublished" datetime="2021-11-28T19:12:57+08:00">2021-11-28</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="Modified: 2022-02-15 16:09:55" itemprop="dateModified" datetime="2022-02-15T16:09:55+08:00">2022-02-15</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/Games/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">Games</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/Games/Unity/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">Unity</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/Unity/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">Unity</span></a><a class="tag-item" href="/tags/Game/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">Game</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#7ECCCD;"><h3 id="bunity使用srp创建自定义渲染管线b"><a class="markdownIt-Anchor" href="#bunity使用srp创建自定义渲染管线b"></a> <b>Unity使用SRP创建自定义渲染管线</b></h3>
+<p>最近有想法深入了解一下管线，所以就研究一下Unity的自定义渲染管线，也加深一下自己对<br />
+管线的理解。也提升下自己那么一丢丢的开发能力。</p>
+<p><b>此文章包括以下内容：</b></p>
+<blockquote>
+<ul>
+<li>什么是SRP可编程渲染管线</li>
+<li>创建一个简单的自定义渲染管线</li>
+</ul>
+</blockquote>
+<span id="more"></span>
+<p>好了那么开始，先建立一个项目，这里Unity版本为 <code>2019.4.18</code>。然后打开官网<br />
+开始看相关资料！！！</p>
+<div align=left>
+    <img src="/images/SRP1/GoingHelp.jpg" width="100%" height="100%" style="zoom:100%" loading="lazy">
+</div>
+<h4 id="b什么是可编程渲染管线srpb"><a class="markdownIt-Anchor" href="#b什么是可编程渲染管线srpb"></a> <b>什么是可编程渲染管线（SRP）</b></h4>
+<p><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/Manual/scriptable-render-pipeline-introduction.html">官网中</a>这么写到了</p>
+<p>此外官网中也给到了一个大概SRP的<a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/current/Manual/SRPBatcher.html">工作原理</a>。</p>
+<hr />
+<div align=left>
+    <img src="/images/SRP1/Help1.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<p>也就是说Unity开放了一层API来让用户可以用C#来控制渲染管线。用户只要继承<code>Rendering.RenderPipelineAsset</code>并重写<code>Render()</code><br />
+方法，来控制就行。那么也不多看，稍微知道是什么就行，直接开始做。</p>
+<h4 id="b创建基本的可编程渲染管线主体srpb"><a class="markdownIt-Anchor" href="#b创建基本的可编程渲染管线主体srpb"></a> <b>创建基本的可编程渲染管线主体（SRP）</b></h4>
+<p>按照<a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/Manual/srp-creating-render-pipeline-asset-and-render-pipeline-instance.html">文档</a>的意思我们要创建以下脚本</p>
+<blockquote>
+<ul>
+<li>一个继承自 RenderPipelineAsset 并覆盖其 CreatePipeline() 方法的脚本。此脚本用于定义渲染管线资源。</li>
+<li>一个继承自 RenderPipeline 并覆盖其 Render() 方法的脚本。此脚本用于定义渲染管线实例。</li>
+<li>一个从 RenderPipelineAsset 脚本创建的渲染管线资源。此资源充当渲染管线实例的工厂类。</li>
+</ul>
+</blockquote>
+<p>按照官网的说法，咱们照搬两个脚本。</p>
+<p><font size=4 color=#FF0000>ExampleRenderPipelineAsset.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">CreateAssetMenu</span><span class="token punctuation">(</span>menuName <span class="token operator">=</span> <span class="token string">"Rendering/ExampleRenderPipelineAsset"</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token comment">//这能让我们在Unity Editor 中创建这个资源</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExampleRenderPipelineAsset</span> <span class="token operator">:</span> <span class="token base-clause"><span class="token class-name">RenderPipelineAsset</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// Unity 在渲染第一帧之前调用此方法。</span>
+    <span class="token comment">// 如果渲染管线资源上的设置改变，Unity 将销毁当前的渲染管线实例，并在渲染下一帧之前再次调用此方法。</span>
+    <span class="token keyword">protected</span> override RenderPipeline <span class="token function">CreatePipeline</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//重写CreatePipline方法 该方法返回RenderPipline类型</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token function">ExampleRenderPipelineInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回渲染管线实例</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><font size=4 color=#FF0000>ExampleRenderPipelineInstance.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExampleRenderPipelineInstance</span> <span class="token operator">:</span> <span class="token base-clause"><span class="token class-name">RenderPipeline</span><span class="token comment">//这部应该是创建了管线实例（看上去）</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token function">ExampleRenderPipelineInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//构造函数</span>
+    <span class="token punctuation">&#123;</span>
+        
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">protected</span> override <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera<span class="token punctuation">[</span><span class="token punctuation">]</span> cameras<span class="token punctuation">)</span><span class="token comment">//在这里重写这个Render方法</span>
+    <span class="token punctuation">&#123;</span>
+        
+    <span class="token punctuation">&#125;</span>
+    
+<span class="token punctuation">&#125;</span>
+
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个时候我们就可以在Editor中创建这个资源。把它放到以下位置</p>
+<div align=left>
+    <img src="/images/SRP1/NewAss.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<p>然后神奇的事情发生了。咱们的场景和渲染窗口都变黑了，啥也没有。这就说明新的管线起到作用了。</p>
+<h4 id="b创建可配置的可编程渲染管线实例srpb"><a class="markdownIt-Anchor" href="#b创建可配置的可编程渲染管线实例srpb"></a> <b>创建可配置的可编程渲染管线实例（SRP）</b></h4>
+<p>我们现在可以在脚本中为管线增加自定义功能了，同样的两个脚本，我们在<code>ExampleRenderPipelineAsset.cs</code>中先对外配置一些数据，如下：</p>
+<p><font size=4 color=#FF0000>ExampleRenderPipelineAsset.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token function">CreateAssetMenu</span><span class="token punctuation">(</span>menuName <span class="token operator">=</span> <span class="token string">"Rendering/ExampleRenderPipelineAsset"</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token comment">//这能让我们在Unity Editor 中创建这个资源</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExampleRenderPipelineAsset</span> <span class="token operator">:</span> <span class="token base-clause"><span class="token class-name">RenderPipelineAsset</span></span>
+<span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">public</span> Color exampleColor<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> string exampleString<span class="token punctuation">;</span><span class="token comment">//自定义修改管线 暴露在外的变量</span>
+    <span class="token comment">// Unity 在渲染第一帧之前调用此方法。</span>
+    <span class="token comment">// 如果渲染管线资源上的设置改变，Unity 将销毁当前的渲染管线实例，并在渲染下一帧之前再次调用此方法。</span>
+    <span class="token keyword">protected</span> override RenderPipeline <span class="token function">CreatePipeline</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//重写CreatePipline方法 该方法返回RenderPipline类型</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token function">ExampleRenderPipelineInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//返回渲染管线实例 这边调用了脚本的构造函数</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后在<code>ExampleRenderPipelineInstance.cs</code>中调用并处理它：</p>
+<p><font size=4 color=#FF0000>ExampleRenderPipelineInstance.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExampleRenderPipelineInstance</span> <span class="token operator">:</span> <span class="token base-clause"><span class="token class-name">RenderPipeline</span><span class="token comment">//这部应该是创建了管线实例（看上去）</span></span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> ExampleRenderPipelineAsset renderPipelineAsset<span class="token punctuation">;</span><span class="token comment">// 使用此变量来引用传递给构造函数的渲染管线资源 这似乎也是单例好像</span>
+    <span class="token keyword">public</span> <span class="token function">ExampleRenderPipelineInstance</span><span class="token punctuation">(</span>ExampleRenderPipelineAsset asset<span class="token punctuation">)</span><span class="token comment">//构造函数 然后就把自己输入进去了 最终似乎把ExampleRenderPipelineAsset类传进来了</span>
+    <span class="token punctuation">&#123;</span>
+        renderPipelineAsset <span class="token operator">=</span> asset<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+
+    <span class="token comment">// 对于当前正在渲染的每个 CameraType，Unity 每帧调用一次此方法。</span>
+    <span class="token keyword">protected</span> override <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera<span class="token punctuation">[</span><span class="token punctuation">]</span> cameras<span class="token punctuation">)</span><span class="token comment">//在这里重写这个Render方法</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span>
+        Debug<span class="token punctuation">.</span><span class="token function">Log</span><span class="token punctuation">(</span>renderPipelineAsset<span class="token punctuation">.</span>exampleString<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+<span class="token punctuation">&#125;</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，我们把管线资源的数据给了管线实例，最后在Render()方法中每帧输出。结果如下：</p>
+<div align=left>
+    <img src="/images/SRP1/DebugPram.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+控制台中成功输出了，资源中设置的内容。
+<h4 id="b设置激活可编程渲染管线的基础功能srpb"><a class="markdownIt-Anchor" href="#b设置激活可编程渲染管线的基础功能srpb"></a> <b>设置激活可编程渲染管线的基础功能（SRP）</b></h4>
+<p>说到这以及完成了基础上的配置了，大概知道这两个脚本怎么工作之后，就可以开始设置激活管线的渲染过程了！！！</p>
+<h5 id="b绘制一个天空盒b"><a class="markdownIt-Anchor" href="#b绘制一个天空盒b"></a> <b>绘制一个天空盒</b></h5>
+<p>现在我们来绘制一个基础的天空盒！！,首先，我们需要循环所有相机，对每个相机执行一个渲染命令，脚本中override的<code>Render()</code><br />
+指令接收了一个摄像机数组，我门需要在其中对每个相机进行操作。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token function">foreach</span> <span class="token punctuation">(</span>Camera camera in cameras<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+            <span class="token comment">//执行的操作在这里</span>
+    <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后为了方便操作，给他扩展一个新类来写入每个摄像机渲染的内容，最后在这里执行。</p>
+<p><font size=4 color=#FF0000>ExampleRenderPipelineInstance.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">CameraRender renderer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">CameraRender</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 对于当前正在渲染的每个 CameraType，Unity 每帧调用一次此方法。</span>
+<span class="token keyword">protected</span> override <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera<span class="token punctuation">[</span><span class="token punctuation">]</span> cameras<span class="token punctuation">)</span><span class="token comment">//在这里重写这个Render方法</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">// 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span>
+    <span class="token function">foreach</span> <span class="token punctuation">(</span>Camera camera in cameras<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        renderer<span class="token punctuation">.</span><span class="token function">Render</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//循环每个摄像机 执行一次CameraRender.Render()</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><font size=4 color=#FF0000>CameraRender.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CameraRender</span>
+<span class="token punctuation">&#123;</span>
+
+    ScriptableRenderContext context<span class="token punctuation">;</span>
+    Camera camera<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera camera<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>context <span class="token operator">=</span> context<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>camera <span class="token operator">=</span> camera<span class="token punctuation">;</span>
+        <span class="token function">Setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span>
+    <span class="token punctuation">&#123;</span>
+        context<span class="token punctuation">.</span><span class="token function">DrawSkybox</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//提交工作序列</span>
+    <span class="token punctuation">&#123;</span>
+        context<span class="token punctuation">.</span><span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">Setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//场景视图设置投影矩阵使场景正确与屏幕对其</span>
+    <span class="token punctuation">&#123;</span>
+        context<span class="token punctuation">.</span><span class="token function">SetupCameraProperties</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样我们就绘制好了一个能够在屏幕中正确显示的天空盒。</p>
+<div align=left>
+    <img src="/images/SRP1/DrawSkyBox.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<h5 id="b设置命令缓冲区b"><a class="markdownIt-Anchor" href="#b设置命令缓冲区b"></a> <b>设置命令缓冲区</b></h5>
+<p>这个地方补了下延迟渲染的知识</p>
+<div align=left>
+    <img src="/images/SRP1/SROShaderPass.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<div align=left>
+    <img src="/images/SRP1/SRP_Batcher_loop.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<p>上图是一个SRP管线的流程图，可以大概的堪出来其实在一帧中所有的渲染命令全部都是存在一个命令缓冲区中再一起发送给GPU的，<br />
+所以我自己的理解是，渲染每一帧的时候CPU会把这一帧所需要的命令数据和参数打包在命令缓冲区中，然后一起发送给Shader代码统一处理。</p>
+<div align=left>
+    <img src="/images/SRP1/CamRender1.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<p>在上图的Frame Debugger中可以看到 一个Render Camera中包含了这一帧中所有的指令，所有命令都包含在一个Render Camera<br />
+的块中，现在我们把设置的命令缓冲关掉看看。</p>
+<div align=left>
+    <img src="/images/SRP1/CamRender2.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<p>突然发现他们没有了，他们在这一帧是逐步执行的。而我们设置的命令缓冲区的名字正是 Render Camera。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">const</span> string bufferName <span class="token operator">=</span> <span class="token string">"Render Camera"</span><span class="token punctuation">;</span>
+
+CommandBuffer buffer <span class="token operator">=</span> <span class="token keyword">new</span> CommandBuffer
+<span class="token punctuation">&#123;</span>
+    name <span class="token operator">=</span> bufferName
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>好了 现在先设置这个Buffer</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">void</span> <span class="token function">Setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    context<span class="token punctuation">.</span><span class="token function">SetupCameraProperties</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    buffer<span class="token punctuation">.</span><span class="token function">ClearRenderTarget</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">,</span>Color<span class="token punctuation">.</span>clear<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//清空渲染目标</span>
+    buffer<span class="token punctuation">.</span><span class="token function">BeginSample</span><span class="token punctuation">(</span>bufferName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ExcuteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">void</span> <span class="token function">ExcuteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    context<span class="token punctuation">.</span><span class="token function">ExecuteCommandBuffer</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    buffer<span class="token punctuation">.</span><span class="token function">Clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>首先分析一下这段代码的作用，我们先准备了摄像机的数据，这相当于上面流程图的第一阶段,Setup。<br />
+然后第二部我们清理了缓冲区中的所有内容。然后开始进行填充命令， 最后调用命令并清空缓冲区。<br />
+那么，这个函数中最终执行的会是BeginSample这个函数，我们为什么要执行它呢？，目前我们<br />
+正常看到的是一个Render Camera 框住了其他所有的渲染步骤，但是如果我们把BeginSample这一块移动<br />
+到了别的位置</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera camera<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>context <span class="token operator">=</span> context<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>camera <span class="token operator">=</span> camera<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">Cull</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">//为真调用括号里的函数</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token function">Setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//绘制几何体</span>
+    <span class="token punctuation">&#123;</span>
+        context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettings<span class="token punctuation">,</span> ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        buffer<span class="token punctuation">.</span><span class="token function">BeginSample</span><span class="token punctuation">(</span>bufferName<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//向命令缓冲中添加开始采样的命令</span>
+        <span class="token function">ExcuteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//调用命令</span>
+        context<span class="token punctuation">.</span><span class="token function">DrawSkybox</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//提交工作序列</span>
+    <span class="token punctuation">&#123;</span>
+        buffer<span class="token punctuation">.</span><span class="token function">EndSample</span><span class="token punctuation">(</span>bufferName<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//向命令缓冲中添加结束采样的命令</span>
+        <span class="token function">ExcuteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//调用命令</span>
+        context<span class="token punctuation">.</span><span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个时候我们会发现嵌套消失了</p>
+<div align=left>
+    <img src="/images/SRP1/CamRender3.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+并且屏幕中绘制的是后绘制的RenderCamera中的内容，渲染目标内的东西被覆盖了。
+然后大概推出了这命令缓冲区的作用
+<ul>
+<li>BeginSample和EndSample包裹的内容全部在采样的buffer名字下面一起执行</li>
+<li>最终他们包裹的内容会合并进ScriptableRenderContext里面提交到大的工作序列中执行的</li>
+<li>他们可以重复的进行嵌套，但是保证嵌套运行的顺序</li>
+</ul>
+<p><font size=4 color=#FF0000>CameraRender.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CameraRender</span>
+<span class="token punctuation">&#123;</span>
+
+    ScriptableRenderContext context<span class="token punctuation">;</span>
+    Camera camera<span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> string bufferName <span class="token operator">=</span> <span class="token string">"Render Camera"</span><span class="token punctuation">;</span>
+
+    CommandBuffer buffer <span class="token operator">=</span> <span class="token keyword">new</span> CommandBuffer
+    <span class="token punctuation">&#123;</span>
+        name <span class="token operator">=</span> bufferName
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+    CullingResults cullingResults<span class="token punctuation">;</span><span class="token comment">//剔除参数</span>
+
+    <span class="token keyword">static</span> ShaderTagId unlitShaderTagId <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"SRPDefaultUnlit"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//默认画出来使用的Shader</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera camera<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>context <span class="token operator">=</span> context<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>camera <span class="token operator">=</span> camera<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">Cull</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">//为真调用括号里的函数</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token function">Setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//工作顺序</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//绘制几何体</span>
+    <span class="token punctuation">&#123;</span>
+        var sortingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">SortingSettings</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        var drawingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">DrawingSettings</span><span class="token punctuation">(</span>unlitShaderTagId<span class="token punctuation">,</span> sortingSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        var filteringSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">FilteringSettings</span><span class="token punctuation">(</span>RenderQueueRange<span class="token punctuation">.</span>all<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettings<span class="token punctuation">,</span> ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        context<span class="token punctuation">.</span><span class="token function">DrawSkybox</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//提交工作序列</span>
+    <span class="token punctuation">&#123;</span>
+        buffer<span class="token punctuation">.</span><span class="token function">EndSample</span><span class="token punctuation">(</span>bufferName<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//向命令缓冲中添加结束采样的命令 End结束</span>
+        <span class="token function">ExcuteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//调用命令</span>
+        context<span class="token punctuation">.</span><span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">ExcuteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        context<span class="token punctuation">.</span><span class="token function">ExecuteCommandBuffer</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        buffer<span class="token punctuation">.</span><span class="token function">Clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">void</span> <span class="token function">Setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        context<span class="token punctuation">.</span><span class="token function">SetupCameraProperties</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        buffer<span class="token punctuation">.</span><span class="token function">ClearRenderTarget</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">,</span>Color<span class="token punctuation">.</span>clear<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        buffer<span class="token punctuation">.</span><span class="token function">BeginSample</span><span class="token punctuation">(</span>bufferName<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//向命令缓冲中添加开始采样的命令 Begin开始</span>
+        <span class="token function">ExcuteBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//调用命令</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">bool</span> <span class="token function">Cull</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>camera<span class="token punctuation">.</span><span class="token function">TryGetCullingParameters</span><span class="token punctuation">(</span>out ScriptableCullingParameters p<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            cullingResults <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token function">Cull</span><span class="token punctuation">(</span>ref p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="b设置剔除b"><a class="markdownIt-Anchor" href="#b设置剔除b"></a> <b>设置剔除</b></h5>
+<p>其实上面的代码部分已经包括了这个部分</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">bool</span> <span class="token function">Cull</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>camera<span class="token punctuation">.</span><span class="token function">TryGetCullingParameters</span><span class="token punctuation">(</span>out ScriptableCullingParameters p<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            cullingResults <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token function">Cull</span><span class="token punctuation">(</span>ref p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个函数最后在主函数中调用就行</p>
+<h5 id="b渲染出没有阴影的几何体b"><a class="markdownIt-Anchor" href="#b渲染出没有阴影的几何体b"></a> <b>渲染出没有阴影的几何体</b></h5>
+<p>这个部分还是接着上面的代码说明，在<code>DrawVsibleGeoMetry()</code>方法中进行了实现</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">void</span> <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//绘制几何体</span>
+    <span class="token punctuation">&#123;</span>
+        var sortingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">SortingSettings</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        var drawingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">DrawingSettings</span><span class="token punctuation">(</span>unlitShaderTagId<span class="token punctuation">,</span> sortingSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        var filteringSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">FilteringSettings</span><span class="token punctuation">(</span>RenderQueueRange<span class="token punctuation">.</span>all<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettings<span class="token punctuation">,</span> ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        context<span class="token punctuation">.</span><span class="token function">DrawSkybox</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span>
+    <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们先来看看其中的变量类型,他们分别对应了API中的如下内容：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.SortingSettings-ctor.html">https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.SortingSettings-ctor.html</a><br />
+<a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.DrawingSettings-ctor.html">https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.DrawingSettings-ctor.html</a><br />
+<a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.FilteringSettings-ctor.html">https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.FilteringSettings-ctor.html</a></p>
+</blockquote>
+<p>他们三个都是构造函数，返回值成为了DrawRenderers()的参数，最终执行的是<code>DrawRenderers()</code>。<br />
+他们分别表示了：</p>
+<ul>
+<li>摄像机的透明排序设置。</li>
+<li>材质的绘制设置，包含了需要用到哪些材质，介于材质会包含透明度混合，参数需要知道材质ID和透明排序</li>
+<li>过滤图层蒙版的结构</li>
+</ul>
+<p>有了这些东西之后我们就能使用DrawRenderers来渲染物体了！</p>
+<h5 id="b绘制错误或旧版的着色器b"><a class="markdownIt-Anchor" href="#b绘制错误或旧版的着色器b"></a> <b>绘制错误或旧版的着色器</b></h5>
+<p>在编辑器中，我们需要区分材质是否被正确支持，支持的材质需要高亮显示区分，或者是绘制默认着色器。<br />
+我们先来绘制旧版着色器</p>
+ <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">static</span> ShaderTagId<span class="token punctuation">[</span><span class="token punctuation">]</span> legacySJaderTagIds <span class="token operator">=</span> 
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"Always"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"ForwardBase"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"PrepassBase"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"Vertex"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"VertexLMRGBM"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"VertexLM"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们先建一个ShaderTagId类型的数组。把这些旧版Shader都包含进来。<br />
+然后我们新建一个ErrorMaterial类型变量用来存错误的着色器。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">static</span> Material errorMaterial<span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>然后我们创建一个新的函数绘制这些几何体</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">void</span> <span class="token function">DrawUnSupportedShaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//绘制无效或错误的几何体</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>errorMaterial <span class="token operator">==</span> null<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        errorMaterial <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Material</span><span class="token punctuation">(</span>Shader<span class="token punctuation">.</span><span class="token function">Find</span><span class="token punctuation">(</span><span class="token string">"Hidden/InternalErrorShader"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        
+    <span class="token punctuation">&#125;</span><span class="token comment">//赋值 找到错误的着色器。</span>
+    
+    var drawingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">DrawingSettings</span><span class="token punctuation">(</span>legacySJaderTagIds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token function">SortingSettings</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>overrideMaterial <span class="token operator">=</span> errorMaterial<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span class="token comment">//错误的材质显示</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> legacySJaderTagIds<span class="token punctuation">.</span>Length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        drawingSettings<span class="token punctuation">.</span><span class="token function">SetShaderPassName</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span>legacySJaderTagIds<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    var filteringSettings <span class="token operator">=</span> FilteringSettings<span class="token punctuation">.</span>defaultValue<span class="token punctuation">;</span>
+
+    context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettings<span class="token punctuation">,</span>ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们先找到了用来表现错误材质的着色器，最后在DrawingSettings调用使用这个材质。为了绘制旧版的材质，我们循环了这个数组，<br />
+用SetShaderPassName,来绘制一个材质的多个通道。这使得我们使用默认管线着色器的对象得以被正确绘制出来，而不是藏起来了。<br />
+，但是其实我们在DrawSetting中其实覆盖了这个错误材质，所以不受支持的材质仍然会显示为洋红色。</p>
+<h5 id="bgizmosb"><a class="markdownIt-Anchor" href="#bgizmosb"></a> <b>Gizmos</b></h5>
+<p>绘制Gizmos是方便我们调试场景很重要的过程，当然这一步我们也需要在管道中完成。首先，我们的Gizmos应该只在Editor下显示。<br />
+为了方便调试，我们新建一个扩展类，partial class。</p>
+<p>我们给CameraRender类前加上扩展类标志。<code>public partial class CameraRender</code>然后新建一个一样的扩展类。把<code>#if UNITY_EDITOR</code><br />
+块写进去，最后吧我们只在编辑器中才渲染的部分照写过来。原来的那一部分删掉。</p>
+<p>如下：</p>
+<p><font size=4 color=#FF0000>CameraRenderEditor.cs</font></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEditor<span class="token punctuation">;</span>
+
+partial <span class="token keyword">class</span> <span class="token class-name">CameraRender</span>
+<span class="token punctuation">&#123;</span>
+    partial <span class="token keyword">void</span> <span class="token function">DrawGizmos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    partial <span class="token keyword">void</span> <span class="token function">DrawUnSupportedShaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">UNITY_EDITOR</span><span class="token comment">//只在编辑器下显示</span></span>
+
+    partial <span class="token keyword">void</span> <span class="token function">DrawUnSupportedShaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//绘制无效或错误的几何体</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>errorMaterial <span class="token operator">==</span> null<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            errorMaterial <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Material</span><span class="token punctuation">(</span>Shader<span class="token punctuation">.</span><span class="token function">Find</span><span class="token punctuation">(</span><span class="token string">"Hidden/InternalErrorShader"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            
+        <span class="token punctuation">&#125;</span>
+        
+        var drawingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">DrawingSettings</span><span class="token punctuation">(</span>legacySJaderTagIds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token function">SortingSettings</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>overrideMaterial <span class="token operator">=</span> errorMaterial<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span class="token comment">//错误的材质显示</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> legacySJaderTagIds<span class="token punctuation">.</span>Length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            drawingSettings<span class="token punctuation">.</span><span class="token function">SetShaderPassName</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span>legacySJaderTagIds<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        var filteringSettings <span class="token operator">=</span> FilteringSettings<span class="token punctuation">.</span>defaultValue<span class="token punctuation">;</span>
+
+        context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettings<span class="token punctuation">,</span>ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">static</span> ShaderTagId<span class="token punctuation">[</span><span class="token punctuation">]</span> legacySJaderTagIds <span class="token operator">=</span> 
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"Always"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"ForwardBase"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"PrepassBase"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"Vertex"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"VertexLMRGBM"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"VertexLM"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token keyword">static</span> Material errorMaterial<span class="token punctuation">;</span>
+
+    partial <span class="token keyword">void</span> <span class="token function">DrawGizmos</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Handles<span class="token punctuation">.</span><span class="token function">ShouldRenderGizmos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            context<span class="token punctuation">.</span><span class="token function">DrawGizmos</span><span class="token punctuation">(</span>camera<span class="token punctuation">,</span>GizmoSubset<span class="token punctuation">.</span>PreImageEffects<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            context<span class="token punctuation">.</span><span class="token function">DrawGizmos</span><span class="token punctuation">(</span>camera<span class="token punctuation">,</span>GizmoSubset<span class="token punctuation">.</span>PostImageEffects<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+<span class="token punctuation">&#125;</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在我们的扩展类中，我们把绘制错误shader的步骤放了进来，并且加入了绘制Gizmos的代码; 这些步骤只会在编辑器中执行。<br />
+最后当然需要记得在主要的Render方法中调用他们。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera camera<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>context <span class="token operator">=</span> context<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>camera <span class="token operator">=</span> camera<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">Cull</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">//为真调用括号里的函数</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">Setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">DrawUnSupportedShaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">DrawGizmos</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">Submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后我们得到了如下效果</p>
+<div align=left>
+    <img src="/images/SRP1/DrawGizmos.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+<h5 id="b给场景打光b"><a class="markdownIt-Anchor" href="#b给场景打光b"></a> <b>给场景打光！</b></h5>
+<p>我们都知道，我们平常写Shader时会使用很多全局变量，如<code>_WorldSpaceLightPos0</code>等等，但是这些东西其实是从管线中的代码传递过来的。<br />
+我们要想使用这些变量，就需要提前在管线中通过<code>Shader.PropertyToID()</code>来定义。<br />
+首先假装为了方便管理，新建一个静态类专门用来放这些信息。</p>
+<p><font size=4 color=#FF0000>ShaderBindings.cs</font></p>
+ <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">;</span>
+<span class="token keyword">using</span> System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">;</span>
+<span class="token keyword">using</span> UnityEngine<span class="token punctuation">.</span>Rendering<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">ShaderBindings</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> string kPerCameraShaderVariablesTag <span class="token operator">=</span> <span class="token string">"SetPerCameraShaderVariables"</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span>  _CameraPos <span class="token operator">=</span> Shader<span class="token punctuation">.</span><span class="token function">PropertyToID</span><span class="token punctuation">(</span><span class="token string">"_CameraPos"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> _LightColor <span class="token operator">=</span> Shader<span class="token punctuation">.</span><span class="token function">PropertyToID</span><span class="token punctuation">(</span><span class="token string">"_LightColor"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> _LightDir <span class="token operator">=</span> Shader<span class="token punctuation">.</span><span class="token function">PropertyToID</span><span class="token punctuation">(</span><span class="token string">"_LightDir"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">SetPerFrameShaderVariables</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span>Camera camera<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        
+        camera<span class="token punctuation">.</span><span class="token function">TryGetCullingParameters</span><span class="token punctuation">(</span>out ScriptableCullingParameters p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        CullingResults cullingResults <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token function">Cull</span><span class="token punctuation">(</span>ref p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        var lights <span class="token operator">=</span> cullingResults<span class="token punctuation">.</span>visibleLights<span class="token punctuation">;</span>
+        CommandBuffer cmd <span class="token operator">=</span> <span class="token keyword">new</span> CommandBuffer<span class="token punctuation">&#123;</span>name <span class="token operator">=</span> kPerCameraShaderVariablesTag<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+        Vector4 CameraPosition <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Vector4</span><span class="token punctuation">(</span>camera<span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localPosition<span class="token punctuation">.</span>x<span class="token punctuation">,</span>camera<span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localPosition<span class="token punctuation">.</span>y<span class="token punctuation">,</span>camera<span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localPosition<span class="token punctuation">.</span>z<span class="token punctuation">,</span><span class="token number">1.0f</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cmd<span class="token punctuation">.</span><span class="token function">SetGlobalVector</span><span class="token punctuation">(</span>_CameraPos<span class="token punctuation">,</span>camera<span class="token punctuation">.</span>transform<span class="token punctuation">.</span>localToWorldMatrix <span class="token operator">*</span> CameraPosition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">foreach</span><span class="token punctuation">(</span>var light in lights<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>light<span class="token punctuation">.</span>lightType <span class="token operator">!=</span> LightType<span class="token punctuation">.</span>Directional<span class="token punctuation">)</span>
+            <span class="token keyword">continue</span><span class="token punctuation">;</span>
+            Vector4 pos <span class="token operator">=</span> light<span class="token punctuation">.</span>localToWorldMatrix<span class="token punctuation">.</span><span class="token function">GetColumn</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Vector4 LightDirection <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Vector4</span><span class="token punctuation">(</span><span class="token operator">-</span>pos<span class="token punctuation">.</span>x<span class="token punctuation">,</span><span class="token operator">-</span>pos<span class="token punctuation">.</span>y<span class="token punctuation">,</span><span class="token operator">-</span>pos<span class="token punctuation">.</span>z<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Color LightColor <span class="token operator">=</span> light<span class="token punctuation">.</span>finalColor<span class="token punctuation">;</span>
+            cmd<span class="token punctuation">.</span><span class="token function">SetGlobalColor</span><span class="token punctuation">(</span>_LightColor<span class="token punctuation">,</span>LightColor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            cmd<span class="token punctuation">.</span><span class="token function">SetGlobalVector</span><span class="token punctuation">(</span>_LightDir<span class="token punctuation">,</span>LightDirection<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">&#125;</span>
+
+        context<span class="token punctuation">.</span><span class="token function">ExecuteCommandBuffer</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cmd<span class="token punctuation">.</span><span class="token function">Clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们的类中包含有几个静态的变量，储存了各个Shader全局变量的ID,这些数据在我们之后使用<code>SetGlobalColor()</code><br />
+的时候用到了，这个函数会根据这个ID和我们计算出的数据来写入命令缓冲区，最后一起调用。<br />
+函数<code>SetPerFrameShaderVariables()</code>计算了摄像机位置，获取了灯光参数，把它们写入了命令缓冲区。<br />
+最后调用缓冲区，然后释放。当这些都做完的时候，最后在Render方法中直接调用就行了。因为这是在单个摄像机中每帧产生<br />
+的数据，所以我们把它放在如下位置。</p>
+<p><font size=4 color=#FF0000> ExampleRenderPipelineInstance.cs</font></p>
+  <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">protected</span> override <span class="token keyword">void</span> <span class="token function">Render</span><span class="token punctuation">(</span>ScriptableRenderContext context<span class="token punctuation">,</span> Camera<span class="token punctuation">[</span><span class="token punctuation">]</span> cameras<span class="token punctuation">)</span><span class="token comment">//在这里重写这个Render方法</span>
+<span class="token punctuation">&#123;</span>
+
+    <span class="token comment">// 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span>
+    Debug<span class="token punctuation">.</span><span class="token function">Log</span><span class="token punctuation">(</span>renderPipelineAsset<span class="token punctuation">.</span>exampleString<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">foreach</span> <span class="token punctuation">(</span>Camera camera in cameras<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        CullingResults cullingResults <span class="token operator">=</span> <span class="token function">Cull</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ShaderBindings<span class="token punctuation">.</span><span class="token function">SetPerFrameShaderVariables</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//调用</span>
+        renderer<span class="token punctuation">.</span><span class="token function">Render</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//循环每个摄像机 执行一次CameraRender.Render()</span>
+    <span class="token punctuation">&#125;</span>
+
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时它就会逐帧的向Shader中提供数据了。但是实际上挂载了这个Shader的材质并不会被渲染，我们需要在CameraRender中把这个Shader<br />
+中设置的通道再画一次才行。<br />
+写过UnityShader的都知道，在Shader代码中会有这样一行代码<code>Tags &#123;&quot;LightMode&quot; = &quot;ForwardLit&quot;&#125;</code>这个东西其实就表示这个Shader<br />
+所使用的通道。还记得在CameraRender类中我们设置的<code>ShaderTagId unlitShaderTagId</code>这个代码么，它在DrawSetting中被调用了。<br />
+这说明要画出此Shader材质的几何体，就需要在这个材质Shader下Pass下的Tag中设置的Tag。把这个Tag包含进DrawSetting中，渲染器才会<br />
+把它们画出来。故修改如下代码</p>
+<p><font size=4 color=#FF0000> CameraRender.cs</font></p>
+  <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+<span class="token keyword">void</span> <span class="token function">DrawVsibleGeoMetry</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//绘制几何体</span>
+<span class="token punctuation">&#123;</span>
+    var sortingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">SortingSettings</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>criteria <span class="token operator">=</span> SortingCriteria<span class="token punctuation">.</span>CommonOpaque<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    var drawingSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">DrawingSettings</span><span class="token punctuation">(</span>unlitShaderTagId<span class="token punctuation">,</span> sortingSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    var drawingSettingsFW <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">DrawingSettings</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token function">ShaderTagId</span><span class="token punctuation">(</span><span class="token string">"ForwardLit"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> sortingSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    var filteringSettings <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">FilteringSettings</span><span class="token punctuation">(</span>RenderQueueRange<span class="token punctuation">.</span>opaque<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettings<span class="token punctuation">,</span> ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettingsFW<span class="token punctuation">,</span> ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    context<span class="token punctuation">.</span><span class="token function">DrawSkybox</span><span class="token punctuation">(</span>camera<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span>
+
+    sortingSettings<span class="token punctuation">.</span>criteria <span class="token operator">=</span> SortingCriteria<span class="token punctuation">.</span>CommonTransparent<span class="token punctuation">;</span>
+    drawingSettings<span class="token punctuation">.</span>sortingSettings <span class="token operator">=</span> sortingSettings<span class="token punctuation">;</span>
+    filteringSettings<span class="token punctuation">.</span>renderQueueRange <span class="token operator">=</span> RenderQueueRange<span class="token punctuation">.</span>transparent<span class="token punctuation">;</span>
+
+    context<span class="token punctuation">.</span><span class="token function">DrawRenderers</span><span class="token punctuation">(</span>cullingResults<span class="token punctuation">,</span>ref drawingSettings<span class="token punctuation">,</span>ref filteringSettings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//透明物体与不透明物体分开绘制</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们再画一遍拥有这个通道ShaderPass的材质，切回编辑器，我们看一下。</p>
+  <div align=left>
+    <img src="/images/SRP1/LightDA.png" width="100%" height="100%" style="zoom:150%" loading="lazy">
+</div>
+我们现在已经画出了带有光照的几何体。并且在帧调试器中可以看到画这个几何体时使用的Pass和它包含的ShaderProperties。
+到这里其实就已经完成了一个简单的自定义渲染管线了。
+<h4 id="b结语b"><a class="markdownIt-Anchor" href="#b结语b"></a> <b>结语</b></h4>
+<p>通过一段时间的努力，我大概了解了SRP在渲染中到底起到了什么作用，上述内容必然会出现很多理解错误导致不对的地方。尽管<br />
+如此。也在逐步的探索中收获了很多。择个良辰吉日，我再回来继续搭建更完善的自定义管线。</p>
+<img src="/images/SRP1/ENDING.gif" width="100%" height="100%" style="zoom:200%" loading="lazy">
+<blockquote>
+<p>Ref:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35862626">https://zhuanlan.zhihu.com/p/35862626</a></li>
+<li><a target="_blank" rel="noopener" href="https://catlikecoding.com/unity/tutorials/custom-srp/custom-render-pipeline/">https://catlikecoding.com/unity/tutorials/custom-srp/custom-render-pipeline/</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.1/manual/index.html">https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.1/manual/index.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/phi-lira/CustomSRP">https://github.com/phi-lira/CustomSRP</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2021.1/ScriptReference/index.html">https://docs.unity.cn/cn/2021.1/ScriptReference/index.html</a></li>
+</ul>
+</blockquote>
+</div><ul class="post-copyright"><li class="post-copyright-author"><strong>Post author: </strong>MGCJの拖拉机</li><li class="post-copyright-link"><strong>Post link: </strong><a href="http://example.com/2021/11/28/Unity/SRP1/" title="Unity_SRP自定义渲染管线学习1">http://example.com/2021/11/28/Unity/SRP1/</a></li><li class="post-copyright-license"><strong>Copyright Notice: </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> unless otherwise stated.</li></ul></section></article><div class="post-nav"><div class="post-nav-item"></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/11/21/ALittleTalk/AlittleTalk1/" rel="next" title="日常的碎碎念barabara"><span class="post-nav-text">日常的碎碎念barabara</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>这里是哪里呢？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> MGCJの拖拉机</span></div><div class="powered"><span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> v5.4.0</span><span class="footer-separator">|</span><span>Theme - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.6.1</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#7ECCCD" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="Search"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="Searching..." value=""></div><div id="local-search-result"></div></div></div></body></html>
