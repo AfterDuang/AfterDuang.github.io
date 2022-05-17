@@ -41,12 +41,20 @@ links:
     blog: MDN_WEB_DOCS
     desc: WEB网页开发手册
     color: "#8B9B2F" 
+  - url: http://www.cyc2018.xyz/
+    avatar: http://api.btstu.cn/sjtx/api.php?lx=c7&format=images
+    name: CS_Notes
+    blog: CS_Notes
+    desc: Cyc的学习手册
+    color: "#8B9B2F" 
 ---
 
-##### <b>这里用到了一个随机生成头像的API
+##### <b>这里用到了一个随机生成头像的API</b>
 ---
-<b>请求地址：http://api.btstu.cn/sjtx/api.php
-<b>请求实例：http://api.btstu.cn/sjtx/api.php?lx=c1&format=images
+
+请求地址：http://api.btstu.cn/sjtx/api.php
+请求实例：http://api.btstu.cn/sjtx/api.php?lx=c1&format=images
+
 ---
 
 |  名称   | 必填  | 类型 |  说明 |

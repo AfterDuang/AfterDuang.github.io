@@ -46,14 +46,14 @@ post_asset_folder: false
 relative_link: false
 future: true
 highlight:
-  enable: true
+  enable: false
   line_number: true
   auto_detect: false
   tab_replace: ''
   wrap: true
   hljs: false
 prismjs:
-  enable: false
+  enable: true
   preprocess: true
   line_number: true
   tab_replace: ''
@@ -106,7 +106,7 @@ theme: yun
 deploy:
   type: git
   repo: https://github.com/AfterDuang/AfterDuang.github.io # 比如：https://github.com/YunYouJun/yunyoujun.github.io
-  branch: master # 默认使用 master 分支
+  branch: hexo # 默认使用 master 分支
   message: Update new Hexo Static Content # 你可以自定义此次部署更新的说明
 
 markdown_it_plus:
