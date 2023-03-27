@@ -1,0 +1,22 @@
+{
+  "name": "silvermistblog",
+  "version": "0.14.17",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:ssg && npm run rss && npm run fuse",
+    "build:spa": "valaxy build",
+    "build:ssg": "valaxy build --ssg",
+    "fuse": "valaxy fuse",
+    "dev": "valaxy",
+    "rss": "valaxy rss",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "valaxy": "0.14.17",
+    "valaxy-addon-waline": "^0.1.0",
+    "valaxy-theme-yun": "0.14.17"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
