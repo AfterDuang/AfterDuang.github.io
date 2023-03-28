@@ -90,7 +90,7 @@ export default defineSiteConfig({
   },
 
   sponsor: {
-    enable: true,
+    enable: false,
     title: '我很可爱，请给我钱！',
     methods: [
       {
