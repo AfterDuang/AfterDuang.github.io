@@ -76,8 +76,7 @@ export default defineValaxyConfig<UserThemeConfig>({
 
   addons: [
     addonWaline({
-      serverURL: 'https://dk4n45gt.api.lncldglobal.com',
-      comment: true,
+      serverURL: 'https://waline-blog-pinlun.vercel.app/',
     }),
   ],
   
