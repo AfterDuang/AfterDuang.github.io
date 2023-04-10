@@ -1,7 +1,7 @@
 ---
-title: Hello, Valaxy!
-date: 2022-04-01
-updated: 2022-04-01
+title: 博客升级至Valaxy框架
+date: 2023-04-01
+updated: 2023-04-01
 categories: Valaxy 笔记
 tags:
   - valaxy
@@ -9,12 +9,12 @@ tags:
 top: 1
 ---
 
-## Valaxy
+### Valaxy
 
-Next Generation Static Blog Framework.
+去年大半年都没有写博客了，回来看的时候感觉博客上多多少少有些不完整的地方。
 
-Write your first post!
+后面看到了云游君搞了一个自己的博客框架，想着不想花太多时间迁移到别的博客上，就进行了一波升级！！
 
-## Usage
 
-Modify `valaxy.config.ts` to custom your blog.
+
+

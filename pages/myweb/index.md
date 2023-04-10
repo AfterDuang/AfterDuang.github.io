@@ -12,41 +12,59 @@ links:
     color: "#ED2903" # 代表色
     email: # 非必须
   - url: https://helpx.adobe.com/cn/after-effects/using/expression-language-reference.ug.html#property_attributes_and_methods_expression_reference
-    avatar: http://api.btstu.cn/sjtx/api.php?lx=c2&format=images
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c2&format=images
     name: Adobe表达式手册
     blog: Adobe表达式手册
     desc: Adobe表达式参考
     color: "#0078e7" 
   - url: https://sketchfab.com/feed
-    avatar: http://api.btstu.cn/sjtx/api.php?lx=c1&format=images
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c1&format=images
     name: Skerchfab
     blog: Skerchfab
     desc: 一个3D模型下载网站
     color: "#ED2903" 
   - url: https://picrew.me/
-    avatar: http://api.btstu.cn/sjtx/api.php?lx=c6&format=images
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c6&format=images
     name: Picrew
     blog: Picrew
     desc: 类似换装随机制作头像的网站
     color: "#FF9000" 
   - url: https://colorhunt.co/
-    avatar: http://api.btstu.cn/sjtx/api.php?lx=c5&format=images
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c5&format=images
     name: Colorhunt
     blog: ColorHunt
     desc: 配色网站
     color: "#786466" 
   - url: https://developer.mozilla.org/zh-CN/docs/Learn
-    avatar: http://api.btstu.cn/sjtx/api.php?lx=c4&format=images
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c4&format=images
     name: MDN_WEB_DOCS
     blog: MDN_WEB_DOCS
     desc: WEB网页开发手册
     color: "#8B9B2F" 
   - url: http://www.cyc2018.xyz/
-    avatar: http://api.btstu.cn/sjtx/api.php?lx=c7&format=images
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c7&format=images
     name: CS_Notes
     blog: CS_Notes
     desc: Cyc的学习手册
+    color: "#0078e7"
+  - url: https://kz16.top/
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c8&format=images
+    name: 课中引路网
+    blog: 课中引路网
+    desc: 课中引路网,包含Latex,Katex，Markdown这类简易教程
     color: "#8B9B2F"
+  - url: https://katex.org/docs/supported.html
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c9&format=images
+    name: Katex文档
+    blog: Katex文档
+    desc: 包含Katex教程
+    color: "#0078e7"
+  - url: https://markdown.com.cn/basic-syntax/
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c10&format=images
+    name: MarkDown官方教程
+    blog: MarkDown官方教程
+    desc: MarkDown官方教程
+    color: "#0078e7"
 random: false
 ---
 

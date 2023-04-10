@@ -1,6 +1,6 @@
 ---
 title: Blender 渲染初探
-data: 2021-5-19 18:00
+date: 2021-5-19
 tags:
   - Blender
   - Shader

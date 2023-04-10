@@ -1,7 +1,7 @@
 ---
 title: 个人游戏Demo的开发日志 - 0
 excerpt_type: md
-data: 2021-6-18 17:19
+date: 2021-6-18
 tags:
   - Unity
   - Game
