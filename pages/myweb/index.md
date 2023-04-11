@@ -1,11 +1,11 @@
 ---
 title: 推荐的网站
-date: 2019-06-21 13:06:06
+date: 2021-06-21 
 keywords: 链接
 comments: true
 links:
   - url: https://segmentfault.com/markdown#articleHeader11
-    avatar: http://api.btstu.cn/sjtx/api.php
+    avatar: https://api.btstu.cn/sjtx/api.php
     name: Segmentfault
     blog: Segmentfault
     desc: MarkDown语法手册
@@ -64,6 +64,18 @@ links:
     name: MarkDown官方教程
     blog: MarkDown官方教程
     desc: MarkDown官方教程
+    color: "#0078e7"
+  - url: https://icones.js.org/
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c11&format=images
+    name: 站点所用图标网址
+    blog: 站点所用图标网址
+    desc: 包含本站图标
+    color: "#0078e7"
+  - url: https://remixicon.com/
+    avatar: https://api.btstu.cn/sjtx/api.php?lx=c12&format=images
+    name: 站点所用图标网址2
+    blog: 站点所用图标网址2
+    desc: 包含本站图标
     color: "#0078e7"
 random: false
 ---

@@ -8,6 +8,14 @@ export default defineSiteConfig({
   author: {
     name: 'MGCJの拖拉机',
     avatar: '/images/HeadImage.png',
+    status: {
+      emoji: "😜",
+      /**
+       * show when hover emoji
+       * @description 当鼠标悬浮在图标上时显示
+       */
+      message: "嘿嘿嘿",
+  },
   },
   description: '如果你是龙，也好',
   subtitle: '柚叶',
