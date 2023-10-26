@@ -23,6 +23,7 @@ export default defineSiteConfig({
 
   favicon: 'https://www.yunyoujun.cn/favicon.svg',
   
+  
 
   social: [
     {
@@ -121,6 +122,14 @@ export default defineSiteConfig({
       },
     ],
   },
+
+  encrypt: {
+    // 开启加密，默认关闭
+    enable: true
+    // algorithm
+    // iv
+    // salt
+  }
 
 
 
