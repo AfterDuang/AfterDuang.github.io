@@ -1,0 +1,859 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="https://www.yunyoujun.cn/favicon.svg"><script>const locale=localStorage.getItem("valaxy-locale")||"zh-CN";document.documentElement.setAttribute("lang",locale)</script><script type="module" async="" crossorigin="" src="/assets/app-tiKC2sCv.js"></script><link rel="stylesheet" crossorigin="" href="/assets/app-wJxDOrHl.css"><link rel="modulepreload" crossorigin="" href="/assets/post-3jYDgcF3.js"><link rel="stylesheet" href="/assets/post-IEKaYRio.css"><link rel="modulepreload" crossorigin="" href="/assets/SRP1-KhqFyo25.js"><link rel="modulepreload" crossorigin="" href="/assets/ValaxyMain.vue_vue_type_style_index_0_lang-kqgtoJEO.js"><link rel="stylesheet" href="/assets/ValaxyMain-0V6weua4.css"><title>Unity_SRP自定义渲染管线学习1 - 柚叶的垃圾桶</title><link rel="icon" href="https://www.yunyoujun.cn/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#ffffff"><meta name="generator" content="Valaxy 0.16.3"><meta property="og:locale:alternate" content="en"><meta name="description" content="如果你是龙，也好"><meta property="og:description" content="如果你是龙，也好"><meta property="og:locale" content="zh-CN"><meta property="og:site_name" content="柚叶的垃圾桶"><meta property="og:title" content="Unity_SRP自定义渲染管线学习1"><meta property="og:image" content="https://www.yunyoujun.cn/favicon.svg"><meta property="og:type" content="website"><meta property="og:url" content="http://yuzuha.space/"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap"></head><body><div id="app" data-server-rendered="true"><!--[--><!--[--><canvas class="fireworks"></canvas><!--[--><div class="yun-bg"></div><!--]--><!--[--><button class="yun-search-btn popup-trigger yun-icon-btn" title="搜索"><div i-ri-search-line=""></div></button><!----><!--]--><div class="yun-page-loading" absolute="" left-0="" right-0="" bottom-0="" top-0="" flex="" justify="center" items-center="" z-10="" bg="$va-c-bg" data-v-673bc094=""><div class="spinner" data-v-673bc094=""></div></div><!--]--><!--[--><!--]--><!----><!--[--><!--[--><!----><button type="button" class="vt-hamburger menu-btn sidebar-toggle yun-icon-btn leading-4 fixed left-0.8rem top-0.6rem md:hidden" aria-label="mobile navigation" aria-expanded="false" inline-flex="" cursor="pointer" z="$yun-z-menu-btn"><span class="vt-hamburger-container"><span class="vt-hamburger-top"></span><span class="vt-hamburger-middle"></span><span class="vt-hamburger-bottom"></span></span></button><aside class="md:translate-x-0 va-card transition sidebar fixed inset-y-0 left-0 overflow-y-auto" text="center" bg="$yun-sidebar-bg-color contain no-repeat" z="$yun-z-sidebar"><!----><div class=""><!--[--><div class="sidebar-panel" p="2"><div class="site-info" m="t-6"><a href="/about" class="site-author-avatar"><img class="rounded-full" src="/images/HeadImage.png" alt="avatar"><span class="site-author-status" title="嘿嘿嘿">😜</span></a><div class="site-author-name leading-6" m="t-0 b-4"><a href="/about" class="">MGCJの拖拉机</a></div><a href="/about/site" class="site-name">柚叶的垃圾桶</a><h4 class="site-subtitle block" text="xs">柚叶</h4><div class="site-description my-1">如果你是龙，也好</div></div><nav class="site-nav" text-xl="" mt-6=""><a href="/" class="site-link-item yun-icon-btn" title="首页"><div i-ri-home-4-line=""></div></a><a href="/archives/" class="site-link-item" title="归档"><div class="icon" i-ri-archive-line=""></div><span class="count">16</span></a><a href="/categories/" class="site-link-item" title="分类"><div class="icon" i-ri-folder-2-line=""></div><span class="count">7</span></a><a href="/tags/" class="site-link-item" title="标签"><div class="icon" i-ri-price-tag-3-line=""></div><span class="count">14</span></a><a href="/about" class="site-link-item yun-icon-btn" title="关于"><!--[--><div class="i-ri-clipboard-line"></div><!--]--></a></nav><hr m="t-4 b-2" op="20"><div class="links-of-author"><!--[--><a class="links-of-author-item yun-icon-btn" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><div class="i-ri-rss-line icon"></div></a><a class="links-of-author-item yun-icon-btn" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=EStUoGjIJMWW_7e7vKZWScpdR0xyUwip&amp;noverify=0#" title="QQ" target="_blank" style="color:#12b7f5"><div class="i-ri-qq-line icon"></div></a><a class="links-of-author-item yun-icon-btn" rel="noopener" href="https://github.com/AfterDuang" title="GitHub" target="_blank" style="color:#6e5494"><div class="i-ri-github-line icon"></div></a><a class="links-of-author-item yun-icon-btn" rel="noopener" href="https://music.163.com/#/user/home?id=263439846" title="网易云音乐" target="_blank" style="color:#c20c0c"><div class="i-ri-netease-cloud-music-line icon"></div></a><a class="links-of-author-item yun-icon-btn" rel="noopener" href="https://www.zhihu.com/people/tuo-la-ji-35-56" title="知乎" target="_blank" style="color:#0084ff"><div class="i-ri-zhihu-line icon"></div></a><a class="links-of-author-item yun-icon-btn" rel="noopener" href="https://space.bilibili.com/19656307" title="哔哩哔哩" target="_blank" style="color:#ff8eb3"><div class="i-ri-bilibili-line icon"></div></a><a class="links-of-author-item yun-icon-btn" rel="noopener" href="icesmall@outlook.com" title="E-Mail" target="_blank" style="color:#8e71c1"><div class="i-ri-mail-line icon"></div></a><a class="links-of-author-item yun-icon-btn" rel="noopener" href="https://www.travellings.cn/go.html" title="Travelling" target="_blank" style="color:var(--va-c-text)"><div class="i-ri-train-line icon"></div></a><!--]--></div><hr m="y-2" op="20"><div class="links flex-center"><!--[--><a href="/links/" class="link-item yun-icon-btn" inline-flex="" title="我的小伙伴们" style="color:#1e90ff"><!--[--><div class="i-ri-genderless-line icon w-8 h-8"></div><!--]--></a><a href="/girls/" class="link-item yun-icon-btn" inline-flex="" title="喜欢的女孩子" style="color:#ff69b4"><!--[--><div class="i-ri-women-line icon w-8 h-8"></div><!--]--></a><a href="/myweb/" class="link-item yun-icon-btn" inline-flex="" title="好用的网站" style="color:orange"><!--[--><div class="i-ri-cloud-line icon w-8 h-8"></div><!--]--></a><!--]--></div><br></div><div><button class="yun-icon-btn" title="切换深色模式" style="color:#f1cb64"><div i="ri-sun-line dark:ri-moon-line"></div></button><button class="yun-icon-btn" title="切换语言" style="color:var(--va-c-text)"><div i-ri-translate="" class="transition transform"></div></button></div><!--]--></div></aside><!--]--><main class="yun-main md:pl-$va-sidebar-width lt-md:ml-0" flex="~"><div w="full" flex="~"><!--[--><div class="content" flex="~ col grow" w="full" p="l-4 lt-md:0"><div class="yun-card flex-center rounded relative" flex="col" min-h="100px" bg="$va-c-bg-light" m="0" style=""><!----><!----><!--[--><!--[--><header class="post-header mb-2" m="t-16 sm:t-6"><h1 class="post-title flex-center" p="2" text="2xl center" font="serif black" style=""><!----><span inline-flex="" class="leading-none">Unity_SRP自定义渲染管线学习1</span></h1></header><!--]--><!--[--><!--[--><!--[--><!--[--><!----><!----><!----><div class="post-meta" flex="~ col" justify="center" items="center" text="sm" py="1"><div class="post-time flex items-center"><span class="inline-flex-center" title="发表于2022-2-10"><div class="inline-block" i-ri-calendar-line=""></div><time m="l-1">2022-02-10</time></span><span class="inline-flex-center" title="更新于2024-01-13T16:20:18.349Z"><span m="x-2">-</span><div i-ri-calendar-2-line=""></div><time m="l-1">2024-01-13</time></span></div><div class="post-counter flex items-center" mt="2"><span class="inline-flex-center" title="本文字数"><div class="inline-block" i-ri-file-word-line=""></div><time m="l-1">4.7k</time></span><span class="inline-flex-center" title="阅读时长"><span m="x-2">-</span><div i-ri-timer-line=""></div><time m="l-1">19m</time></span></div></div><!--[--><!--]--><!--]--><div flex="~" text="sm" my="1" h="5"><!----><!----></div><div class="inline-flex" text="sm" py="1"><a href="/categories?category=Games/Unity" class="transition post-category inline-flex-center text-xs border-$va-c-divider hover:text-blue-500 hover:border-blue-500" px-2="" h="7" border="" rounded-full="" bg="hover:blue-500 hover:opacity-10"><div m="x-1" inline-flex="" i-ri-folder-2-line=""></div><span>Games &gt; Unity</span></a><span mx="2"></span><div class="post-tags inline-flex" items="center" gap="1" flex="wrap 1" justify="end"><!--[--><a href="/tags/?tag=Unity" class="transition post-tag inline-flex-center text-xs border-$va-c-divider hover:text-blue-500 hover:border-blue-500" px-2="" h="7" rounded-full="" border="" bg="hover:blue-500 hover:opacity-10"><!-- <div m="r-1" i-ri-price-tag-3-line /> --><span>Unity</span></a><a href="/tags/?tag=Game" class="transition post-tag inline-flex-center text-xs border-$va-c-divider hover:text-blue-500 hover:border-blue-500" px-2="" h="7" rounded-full="" border="" bg="hover:blue-500 hover:opacity-10"><!-- <div m="r-1" i-ri-price-tag-3-line /> --><span>Game</span></a><!--]--></div></div><!--]--><!--]--><!--]--><div p="x-4 b-8" class="sm:px-6 lg:px-12 xl:px-16" w="full"><!--[--><template><article class="markdown-body"><!--[--><!----><!----><!--[--><h3 id="unity使用srp创建自定义渲染管线" tabindex="-1"><b>Unity使用SRP创建自定义渲染管线</b> <a aria-current="page" href="/posts/unity/srp1#unity使用srp创建自定义渲染管线" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>Unity使用SRP创建自定义渲染管线</b>&quot;"><!--[-->​<!--]--></a></h3><p>最近有想法深入了解一下管线，所以就研究一下Unity的自定义渲染管线，也加深一下自己对 管线的理解。也提升下自己那么一丢丢的开发能力。</p><p><b>此文章包括以下内容：</b></p><blockquote><ul><li>什么是SRP可编程渲染管线</li><li>创建一个简单的自定义渲染管线</li></ul></blockquote><!-- more --><p>好了那么开始，先建立一个项目，这里Unity版本为 <code>2019.4.18</code>。然后打开官网 开始看相关资料！！！</p><figure><img src="/images/SRP1/GoingHelp.jpg" alt="" loading="lazy" decoding="async"></figure><h4 id="什么是可编程渲染管线-srp" tabindex="-1"><b>什么是可编程渲染管线（SRP）</b> <a aria-current="page" href="/posts/unity/srp1#什么是可编程渲染管线-srp" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>什么是可编程渲染管线（SRP）</b>&quot;"><!--[-->​<!--]--></a></h4><p><a target="_blank" rel="noreferrer" href="https://docs.unity.cn/cn/2019.4/Manual/scriptable-render-pipeline-introduction.html"><!--[-->官网中<!--]--><!----></a>这么写到了</p><p>此外官网中也给到了一个大概SRP的<a target="_blank" rel="noreferrer" href="https://docs.unity.cn/cn/current/Manual/SRPBatcher.html"><!--[-->工作原理<!--]--><!----></a>。</p><hr><figure><img src="/images/SRP1/Help1.png" alt="" loading="lazy" decoding="async"></figure><p>也就是说Unity开放了一层API来让用户可以用C#来控制渲染管线。用户只要继承<code>Rendering.RenderPipelineAsset</code>并重写<code>Render()</code> 方法，来控制就行。那么也不多看，稍微知道是什么就行，直接开始做。</p><h4 id="创建基本的可编程渲染管线主体-srp" tabindex="-1"><b>创建基本的可编程渲染管线主体（SRP）</b> <a aria-current="page" href="/posts/unity/srp1#创建基本的可编程渲染管线主体-srp" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>创建基本的可编程渲染管线主体（SRP）</b>&quot;"><!--[-->​<!--]--></a></h4><p>按照<a target="_blank" rel="noreferrer" href="https://docs.unity.cn/cn/2019.4/Manual/srp-creating-render-pipeline-asset-and-render-pipeline-instance.html"><!--[-->文档<!--]--><!----></a>的意思我们要创建以下脚本</p><blockquote><ul><li>一个继承自 RenderPipelineAsset 并覆盖其 CreatePipeline() 方法的脚本。此脚本用于定义渲染管线资源。</li><li>一个继承自 RenderPipeline 并覆盖其 Render() 方法的脚本。此脚本用于定义渲染管线实例。</li><li>一个从 RenderPipelineAsset 脚本创建的渲染管线资源。此资源充当渲染管线实例的工厂类。</li></ul></blockquote><p>按照官网的说法，咱们照搬两个脚本。</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">[</span><span style="color:#b392f0">CreateAssetMenu</span><span style="color:#e1e4e8">(menuName </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#9ecbff">"Rendering/ExampleRenderPipelineAsset"</span><span style="color:#e1e4e8">)]//这能让我们在Unity Editor 中创建这个资源</span></span>
+<span class="line"><span style="color:#e1e4e8">public class ExampleRenderPipelineAsset : RenderPipelineAsset</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"><span style="color:#6a737d">    // Unity 在渲染第一帧之前调用此方法。</span></span>
+<span class="line"><span style="color:#6a737d">    // 如果渲染管线资源上的设置改变，Unity 将销毁当前的渲染管线实例，并在渲染下一帧之前再次调用此方法。</span></span>
+<span class="line"><span style="color:#e1e4e8">    protected override RenderPipeline </span><span style="color:#b392f0">CreatePipeline</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//重写CreatePipline方法 该方法返回RenderPipline类型</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">return</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ExampleRenderPipelineInstance</span><span style="color:#e1e4e8">();</span><span style="color:#6a737d">//返回渲染管线实例</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">[</span><span style="color:#6f42c1">CreateAssetMenu</span><span style="color:#24292e">(menuName </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#032f62">"Rendering/ExampleRenderPipelineAsset"</span><span style="color:#24292e">)]//这能让我们在Unity Editor 中创建这个资源</span></span>
+<span class="line"><span style="color:#24292e">public class ExampleRenderPipelineAsset : RenderPipelineAsset</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"><span style="color:#6a737d">    // Unity 在渲染第一帧之前调用此方法。</span></span>
+<span class="line"><span style="color:#6a737d">    // 如果渲染管线资源上的设置改变，Unity 将销毁当前的渲染管线实例，并在渲染下一帧之前再次调用此方法。</span></span>
+<span class="line"><span style="color:#24292e">    protected override RenderPipeline </span><span style="color:#6f42c1">CreatePipeline</span><span style="color:#24292e">()</span><span style="color:#6a737d">//重写CreatePipline方法 该方法返回RenderPipline类型</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">return</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ExampleRenderPipelineInstance</span><span style="color:#24292e">();</span><span style="color:#6a737d">//返回渲染管线实例</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">public </span><span style="color:#f97583">class</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ExampleRenderPipelineInstance</span><span style="color:#e1e4e8"> : RenderPipeline</span><span style="color:#6a737d">//这部应该是创建了管线实例（看上去）</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"><span style="color:#e1e4e8">    public </span><span style="color:#b392f0">ExampleRenderPipelineInstance</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//构造函数</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    protected override </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"><span style="color:#e1e4e8">    </span></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">public </span><span style="color:#d73a49">class</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ExampleRenderPipelineInstance</span><span style="color:#24292e"> : RenderPipeline</span><span style="color:#6a737d">//这部应该是创建了管线实例（看上去）</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"><span style="color:#24292e">    public </span><span style="color:#6f42c1">ExampleRenderPipelineInstance</span><span style="color:#24292e">()</span><span style="color:#6a737d">//构造函数</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    protected override </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"><span style="color:#24292e">    </span></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><p>这个时候我们就可以在Editor中创建这个资源。把它放到以下位置</p><figure><img src="/images/SRP1/NewAss.png" alt="" loading="lazy" decoding="async"></figure><p>然后神奇的事情发生了。咱们的场景和渲染窗口都变黑了，啥也没有。这就说明新的管线起到作用了。</p><h4 id="创建可配置的可编程渲染管线实例-srp" tabindex="-1"><b>创建可配置的可编程渲染管线实例（SRP）</b> <a aria-current="page" href="/posts/unity/srp1#创建可配置的可编程渲染管线实例-srp" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>创建可配置的可编程渲染管线实例（SRP）</b>&quot;"><!--[-->​<!--]--></a></h4><p>我们现在可以在脚本中为管线增加自定义功能了，同样的两个脚本，我们在<code>ExampleRenderPipelineAsset.cs</code>中先对外配置一些数据，如下：</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">[</span><span style="color:#b392f0">CreateAssetMenu</span><span style="color:#e1e4e8">(menuName </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#9ecbff">"Rendering/ExampleRenderPipelineAsset"</span><span style="color:#e1e4e8">)]//这能让我们在Unity Editor 中创建这个资源</span></span>
+<span class="line"><span style="color:#e1e4e8">public class ExampleRenderPipelineAsset : RenderPipelineAsset</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    public Color exampleColor;</span></span>
+<span class="line"><span style="color:#e1e4e8">    public string exampleString;</span><span style="color:#6a737d">//自定义修改管线 暴露在外的变量</span></span>
+<span class="line"><span style="color:#6a737d">    // Unity 在渲染第一帧之前调用此方法。</span></span>
+<span class="line"><span style="color:#6a737d">    // 如果渲染管线资源上的设置改变，Unity 将销毁当前的渲染管线实例，并在渲染下一帧之前再次调用此方法。</span></span>
+<span class="line"><span style="color:#e1e4e8">    protected override RenderPipeline </span><span style="color:#b392f0">CreatePipeline</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//重写CreatePipline方法 该方法返回RenderPipline类型</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">return</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ExampleRenderPipelineInstance</span><span style="color:#e1e4e8">(</span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">);</span><span style="color:#6a737d">//返回渲染管线实例 这边调用了脚本的构造函数</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">[</span><span style="color:#6f42c1">CreateAssetMenu</span><span style="color:#24292e">(menuName </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#032f62">"Rendering/ExampleRenderPipelineAsset"</span><span style="color:#24292e">)]//这能让我们在Unity Editor 中创建这个资源</span></span>
+<span class="line"><span style="color:#24292e">public class ExampleRenderPipelineAsset : RenderPipelineAsset</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    public Color exampleColor;</span></span>
+<span class="line"><span style="color:#24292e">    public string exampleString;</span><span style="color:#6a737d">//自定义修改管线 暴露在外的变量</span></span>
+<span class="line"><span style="color:#6a737d">    // Unity 在渲染第一帧之前调用此方法。</span></span>
+<span class="line"><span style="color:#6a737d">    // 如果渲染管线资源上的设置改变，Unity 将销毁当前的渲染管线实例，并在渲染下一帧之前再次调用此方法。</span></span>
+<span class="line"><span style="color:#24292e">    protected override RenderPipeline </span><span style="color:#6f42c1">CreatePipeline</span><span style="color:#24292e">()</span><span style="color:#6a737d">//重写CreatePipline方法 该方法返回RenderPipline类型</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">return</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ExampleRenderPipelineInstance</span><span style="color:#24292e">(</span><span style="color:#005cc5">this</span><span style="color:#24292e">);</span><span style="color:#6a737d">//返回渲染管线实例 这边调用了脚本的构造函数</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><p>然后在<code>ExampleRenderPipelineInstance.cs</code>中调用并处理它：</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">public </span><span style="color:#f97583">class</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ExampleRenderPipelineInstance</span><span style="color:#e1e4e8"> : RenderPipeline</span><span style="color:#6a737d">//这部应该是创建了管线实例（看上去）</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"><span style="color:#e1e4e8">    private ExampleRenderPipelineAsset renderPipelineAsset;</span><span style="color:#6a737d">// 使用此变量来引用传递给构造函数的渲染管线资源 这似乎也是单例好像</span></span>
+<span class="line"><span style="color:#e1e4e8">    public </span><span style="color:#b392f0">ExampleRenderPipelineInstance</span><span style="color:#e1e4e8">(ExampleRenderPipelineAsset asset)</span><span style="color:#6a737d">//构造函数 然后就把自己输入进去了 最终似乎把ExampleRenderPipelineAsset类传进来了</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        renderPipelineAsset </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> asset;</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6a737d">    // 对于当前正在渲染的每个 CameraType，Unity 每帧调用一次此方法。</span></span>
+<span class="line"><span style="color:#e1e4e8">    protected override </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#6a737d">        // 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span></span>
+<span class="line"><span style="color:#e1e4e8">        Debug.</span><span style="color:#b392f0">Log</span><span style="color:#e1e4e8">(renderPipelineAsset.exampleString);</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"><span style="color:#e1e4e8">    </span></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">public </span><span style="color:#d73a49">class</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ExampleRenderPipelineInstance</span><span style="color:#24292e"> : RenderPipeline</span><span style="color:#6a737d">//这部应该是创建了管线实例（看上去）</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"><span style="color:#24292e">    private ExampleRenderPipelineAsset renderPipelineAsset;</span><span style="color:#6a737d">// 使用此变量来引用传递给构造函数的渲染管线资源 这似乎也是单例好像</span></span>
+<span class="line"><span style="color:#24292e">    public </span><span style="color:#6f42c1">ExampleRenderPipelineInstance</span><span style="color:#24292e">(ExampleRenderPipelineAsset asset)</span><span style="color:#6a737d">//构造函数 然后就把自己输入进去了 最终似乎把ExampleRenderPipelineAsset类传进来了</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        renderPipelineAsset </span><span style="color:#d73a49">=</span><span style="color:#24292e"> asset;</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6a737d">    // 对于当前正在渲染的每个 CameraType，Unity 每帧调用一次此方法。</span></span>
+<span class="line"><span style="color:#24292e">    protected override </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#6a737d">        // 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span></span>
+<span class="line"><span style="color:#24292e">        Debug.</span><span style="color:#6f42c1">Log</span><span style="color:#24292e">(renderPipelineAsset.exampleString);</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"><span style="color:#24292e">    </span></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><p>可以看到，我们把管线资源的数据给了管线实例，最后在Render()方法中每帧输出。结果如下：</p><figure><img src="/images/SRP1/DebugPram.png" alt="" loading="lazy" decoding="async"></figure><p>控制台中成功输出了，资源中设置的内容。</p><h4 id="设置激活可编程渲染管线的基础功能-srp" tabindex="-1"><b>设置激活可编程渲染管线的基础功能（SRP）</b> <a aria-current="page" href="/posts/unity/srp1#设置激活可编程渲染管线的基础功能-srp" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>设置激活可编程渲染管线的基础功能（SRP）</b>&quot;"><!--[-->​<!--]--></a></h4><p>说到这以及完成了基础上的配置了，大概知道这两个脚本怎么工作之后，就可以开始设置激活管线的渲染过程了！！！</p><h5 id="绘制一个天空盒" tabindex="-1"><b>绘制一个天空盒</b> <a aria-current="page" href="/posts/unity/srp1#绘制一个天空盒" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>绘制一个天空盒</b>&quot;"><!--[-->​<!--]--></a></h5><p>现在我们来绘制一个基础的天空盒！！,首先，我们需要循环所有相机，对每个相机执行一个渲染命令，脚本中override的<code>Render()</code> 指令接收了一个摄像机数组，我门需要在其中对每个相机进行操作。</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#b392f0">foreach</span><span style="color:#e1e4e8"> (Camera camera in cameras)</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#6a737d">            //执行的操作在这里</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#6f42c1">foreach</span><span style="color:#24292e"> (Camera camera in cameras)</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#6a737d">            //执行的操作在这里</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><p>之后为了方便操作，给他扩展一个新类来写入每个摄像机渲染的内容，最后在这里执行。</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"><span style="color:#e1e4e8">CameraRender renderer </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">CameraRender</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#6a737d">    // 对于当前正在渲染的每个 CameraType，Unity 每帧调用一次此方法。</span></span>
+<span class="line"><span style="color:#e1e4e8">protected override </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"><span style="color:#6a737d">    // 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#b392f0">foreach</span><span style="color:#e1e4e8"> (Camera camera in cameras)</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        renderer.</span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(context,camera);</span><span style="color:#6a737d">//循环每个摄像机 执行一次CameraRender.Render()</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"><span style="color:#24292e">CameraRender renderer </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">CameraRender</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#6a737d">    // 对于当前正在渲染的每个 CameraType，Unity 每帧调用一次此方法。</span></span>
+<span class="line"><span style="color:#24292e">protected override </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"><span style="color:#6a737d">    // 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#6f42c1">foreach</span><span style="color:#24292e"> (Camera camera in cameras)</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        renderer.</span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(context,camera);</span><span style="color:#6a737d">//循环每个摄像机 执行一次CameraRender.Render()</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"><span style="color:#e1e4e8">public </span><span style="color:#f97583">class</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">CameraRender</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    ScriptableRenderContext context;</span></span>
+<span class="line"><span style="color:#e1e4e8">    Camera camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    public </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.context </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> context;</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.camera </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> camera;</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Setup</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawSkybox</span><span style="color:#e1e4e8">(camera);</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//提交工作序列</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Setup</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//场景视图设置投影矩阵使场景正确与屏幕对其</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">SetupCameraProperties</span><span style="color:#e1e4e8">(camera);</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"><span style="color:#24292e">public </span><span style="color:#d73a49">class</span><span style="color:#24292e"> </span><span style="color:#6f42c1">CameraRender</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    ScriptableRenderContext context;</span></span>
+<span class="line"><span style="color:#24292e">    Camera camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    public </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.context </span><span style="color:#d73a49">=</span><span style="color:#24292e"> context;</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.camera </span><span style="color:#d73a49">=</span><span style="color:#24292e"> camera;</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Setup</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">()</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawSkybox</span><span style="color:#24292e">(camera);</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">()</span><span style="color:#6a737d">//提交工作序列</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Setup</span><span style="color:#24292e">()</span><span style="color:#6a737d">//场景视图设置投影矩阵使场景正确与屏幕对其</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">SetupCameraProperties</span><span style="color:#24292e">(camera);</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><p>这样我们就绘制好了一个能够在屏幕中正确显示的天空盒。</p><figure><img src="/images/SRP1/DrawSkyBox.png" alt="" loading="lazy" decoding="async"></figure><h5 id="设置命令缓冲区" tabindex="-1"><b>设置命令缓冲区</b> <a aria-current="page" href="/posts/unity/srp1#设置命令缓冲区" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>设置命令缓冲区</b>&quot;"><!--[-->​<!--]--></a></h5><p>这个地方补了下延迟渲染的知识</p><figure><img src="/images/SRP1/SROShaderPass.png" alt="" loading="lazy" decoding="async"></figure><figure><img src="/images/SRP1/SRP_Batcher_loop.png" alt="" loading="lazy" decoding="async"></figure><p>上图是一个SRP管线的流程图，可以大概的堪出来其实在一帧中所有的渲染命令全部都是存在一个命令缓冲区中再一起发送给GPU的， 所以我自己的理解是，渲染每一帧的时候CPU会把这一帧所需要的命令数据和参数打包在命令缓冲区中，然后一起发送给Shader代码统一处理。</p><figure><img src="/images/SRP1/CamRender1.png" alt="" loading="lazy" decoding="async"></figure><p>在上图的Frame Debugger中可以看到 一个Render Camera中包含了这一帧中所有的指令，所有命令都包含在一个Render Camera 的块中，现在我们把设置的命令缓冲关掉看看。</p><figure><img src="/images/SRP1/CamRender2.png" alt="" loading="lazy" decoding="async"></figure><p>突然发现他们没有了，他们在这一帧是逐步执行的。而我们设置的命令缓冲区的名字正是 Render Camera。</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">const</span><span style="color:#e1e4e8"> string bufferName </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#9ecbff">"Render Camera"</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    CommandBuffer buffer </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> CommandBuffer</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        name </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> bufferName</span></span>
+<span class="line"><span style="color:#e1e4e8">    };</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">const</span><span style="color:#24292e"> string bufferName </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#032f62">"Render Camera"</span><span style="color:#24292e">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    CommandBuffer buffer </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> CommandBuffer</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        name </span><span style="color:#d73a49">=</span><span style="color:#24292e"> bufferName</span></span>
+<span class="line"><span style="color:#24292e">    };</span></span></code></pre><button class="collapse"></button></div><p>好了 现在先设置这个Buffer</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Setup</span><span style="color:#e1e4e8">()</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">SetupCameraProperties</span><span style="color:#e1e4e8">(camera);</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">ClearRenderTarget</span><span style="color:#e1e4e8">(</span><span style="color:#79b8ff">true</span><span style="color:#e1e4e8">,</span><span style="color:#79b8ff">true</span><span style="color:#e1e4e8">,Color.clear);</span><span style="color:#6a737d">//清空渲染目标</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">BeginSample</span><span style="color:#e1e4e8">(bufferName);</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">ExcuteBuffer</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ExcuteBuffer</span><span style="color:#e1e4e8">()</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">ExecuteCommandBuffer</span><span style="color:#e1e4e8">(buffer);</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">Clear</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Setup</span><span style="color:#24292e">()</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">SetupCameraProperties</span><span style="color:#24292e">(camera);</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">ClearRenderTarget</span><span style="color:#24292e">(</span><span style="color:#005cc5">true</span><span style="color:#24292e">,</span><span style="color:#005cc5">true</span><span style="color:#24292e">,Color.clear);</span><span style="color:#6a737d">//清空渲染目标</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">BeginSample</span><span style="color:#24292e">(bufferName);</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">ExcuteBuffer</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ExcuteBuffer</span><span style="color:#24292e">()</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">ExecuteCommandBuffer</span><span style="color:#24292e">(buffer);</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">Clear</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><p>首先分析一下这段代码的作用，我们先准备了摄像机的数据，这相当于上面流程图的第一阶段,Setup。 然后第二部我们清理了缓冲区中的所有内容。然后开始进行填充命令， 最后调用命令并清空缓冲区。 那么，这个函数中最终执行的会是BeginSample这个函数，我们为什么要执行它呢？，目前我们 正常看到的是一个Render Camera 框住了其他所有的渲染步骤，但是如果我们把BeginSample这一块移动 到了别的位置</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">public </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.context </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> context;</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.camera </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(</span><span style="color:#f97583">!</span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">())</span><span style="color:#6a737d">//为真调用括号里的函数</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            </span><span style="color:#f97583">return</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Setup</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">BeginSample</span><span style="color:#e1e4e8">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加开始采样的命令</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">ExcuteBuffer</span><span style="color:#e1e4e8">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawSkybox</span><span style="color:#e1e4e8">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//提交工作序列</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">EndSample</span><span style="color:#e1e4e8">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加结束采样的命令</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">ExcuteBuffer</span><span style="color:#e1e4e8">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#24292e">public </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.context </span><span style="color:#d73a49">=</span><span style="color:#24292e"> context;</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.camera </span><span style="color:#d73a49">=</span><span style="color:#24292e"> camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(</span><span style="color:#d73a49">!</span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">())</span><span style="color:#6a737d">//为真调用括号里的函数</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            </span><span style="color:#d73a49">return</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Setup</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">BeginSample</span><span style="color:#24292e">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加开始采样的命令</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">ExcuteBuffer</span><span style="color:#24292e">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawSkybox</span><span style="color:#24292e">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">()</span><span style="color:#6a737d">//提交工作序列</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">EndSample</span><span style="color:#24292e">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加结束采样的命令</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">ExcuteBuffer</span><span style="color:#24292e">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><p>这个时候我们会发现嵌套消失了</p><figure><img src="/images/SRP1/CamRender3.png" alt="" loading="lazy" decoding="async"></figure><p>并且屏幕中绘制的是后绘制的RenderCamera中的内容，渲染目标内的东西被覆盖了。 然后大概推出了这命令缓冲区的作用</p><ul><li>BeginSample和EndSample包裹的内容全部在采样的buffer名字下面一起执行</li><li>最终他们包裹的内容会合并进ScriptableRenderContext里面提交到大的工作序列中执行的</li><li>他们可以重复的进行嵌套，但是保证嵌套运行的顺序</li></ul><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"><span style="color:#e1e4e8">public </span><span style="color:#f97583">class</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">CameraRender</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    ScriptableRenderContext context;</span></span>
+<span class="line"><span style="color:#e1e4e8">    Camera camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">const</span><span style="color:#e1e4e8"> string bufferName </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#9ecbff">"Render Camera"</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    CommandBuffer buffer </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> CommandBuffer</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        name </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> bufferName</span></span>
+<span class="line"><span style="color:#e1e4e8">    };</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    CullingResults cullingResults;</span><span style="color:#6a737d">//剔除参数</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> ShaderTagId unlitShaderTagId </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"SRPDefaultUnlit"</span><span style="color:#e1e4e8">);</span><span style="color:#6a737d">//默认画出来使用的Shader</span></span>
+<span class="line"><span style="color:#e1e4e8">    public </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.context </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> context;</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.camera </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(</span><span style="color:#f97583">!</span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">())</span><span style="color:#6a737d">//为真调用括号里的函数</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            </span><span style="color:#f97583">return</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Setup</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">();</span><span style="color:#6a737d">//工作顺序</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        var sortingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">SortingSettings</span><span style="color:#e1e4e8">(camera);</span></span>
+<span class="line"><span style="color:#e1e4e8">        var drawingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawingSettings</span><span style="color:#e1e4e8">(unlitShaderTagId, sortingSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">        var filteringSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">FilteringSettings</span><span style="color:#e1e4e8">(RenderQueueRange.all);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawSkybox</span><span style="color:#e1e4e8">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//提交工作序列</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">EndSample</span><span style="color:#e1e4e8">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加结束采样的命令 End结束</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">ExcuteBuffer</span><span style="color:#e1e4e8">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ExcuteBuffer</span><span style="color:#e1e4e8">()</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">ExecuteCommandBuffer</span><span style="color:#e1e4e8">(buffer);</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">Clear</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Setup</span><span style="color:#e1e4e8">()</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">SetupCameraProperties</span><span style="color:#e1e4e8">(camera);</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">ClearRenderTarget</span><span style="color:#e1e4e8">(</span><span style="color:#79b8ff">true</span><span style="color:#e1e4e8">,</span><span style="color:#79b8ff">true</span><span style="color:#e1e4e8">,Color.clear);</span></span>
+<span class="line"><span style="color:#e1e4e8">        buffer.</span><span style="color:#b392f0">BeginSample</span><span style="color:#e1e4e8">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加开始采样的命令 Begin开始</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">ExcuteBuffer</span><span style="color:#e1e4e8">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">bool</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">()</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(camera.</span><span style="color:#b392f0">TryGetCullingParameters</span><span style="color:#e1e4e8">(out ScriptableCullingParameters p))</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            cullingResults </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> context.</span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">(ref p);</span></span>
+<span class="line"><span style="color:#e1e4e8">            </span><span style="color:#f97583">return</span><span style="color:#e1e4e8"> </span><span style="color:#79b8ff">true</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">return</span><span style="color:#e1e4e8"> </span><span style="color:#79b8ff">false</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"><span style="color:#24292e">public </span><span style="color:#d73a49">class</span><span style="color:#24292e"> </span><span style="color:#6f42c1">CameraRender</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    ScriptableRenderContext context;</span></span>
+<span class="line"><span style="color:#24292e">    Camera camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">const</span><span style="color:#24292e"> string bufferName </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#032f62">"Render Camera"</span><span style="color:#24292e">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    CommandBuffer buffer </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> CommandBuffer</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        name </span><span style="color:#d73a49">=</span><span style="color:#24292e"> bufferName</span></span>
+<span class="line"><span style="color:#24292e">    };</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    CullingResults cullingResults;</span><span style="color:#6a737d">//剔除参数</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">static</span><span style="color:#24292e"> ShaderTagId unlitShaderTagId </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"SRPDefaultUnlit"</span><span style="color:#24292e">);</span><span style="color:#6a737d">//默认画出来使用的Shader</span></span>
+<span class="line"><span style="color:#24292e">    public </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.context </span><span style="color:#d73a49">=</span><span style="color:#24292e"> context;</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.camera </span><span style="color:#d73a49">=</span><span style="color:#24292e"> camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(</span><span style="color:#d73a49">!</span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">())</span><span style="color:#6a737d">//为真调用括号里的函数</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            </span><span style="color:#d73a49">return</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Setup</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">();</span><span style="color:#6a737d">//工作顺序</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        var sortingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">SortingSettings</span><span style="color:#24292e">(camera);</span></span>
+<span class="line"><span style="color:#24292e">        var drawingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawingSettings</span><span style="color:#24292e">(unlitShaderTagId, sortingSettings);</span></span>
+<span class="line"><span style="color:#24292e">        var filteringSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">FilteringSettings</span><span style="color:#24292e">(RenderQueueRange.all);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawSkybox</span><span style="color:#24292e">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">()</span><span style="color:#6a737d">//提交工作序列</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">EndSample</span><span style="color:#24292e">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加结束采样的命令 End结束</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">ExcuteBuffer</span><span style="color:#24292e">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ExcuteBuffer</span><span style="color:#24292e">()</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">ExecuteCommandBuffer</span><span style="color:#24292e">(buffer);</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">Clear</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Setup</span><span style="color:#24292e">()</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">SetupCameraProperties</span><span style="color:#24292e">(camera);</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">ClearRenderTarget</span><span style="color:#24292e">(</span><span style="color:#005cc5">true</span><span style="color:#24292e">,</span><span style="color:#005cc5">true</span><span style="color:#24292e">,Color.clear);</span></span>
+<span class="line"><span style="color:#24292e">        buffer.</span><span style="color:#6f42c1">BeginSample</span><span style="color:#24292e">(bufferName);</span><span style="color:#6a737d">//向命令缓冲中添加开始采样的命令 Begin开始</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">ExcuteBuffer</span><span style="color:#24292e">();</span><span style="color:#6a737d">//调用命令</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">bool</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">()</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(camera.</span><span style="color:#6f42c1">TryGetCullingParameters</span><span style="color:#24292e">(out ScriptableCullingParameters p))</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            cullingResults </span><span style="color:#d73a49">=</span><span style="color:#24292e"> context.</span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">(ref p);</span></span>
+<span class="line"><span style="color:#24292e">            </span><span style="color:#d73a49">return</span><span style="color:#24292e"> </span><span style="color:#005cc5">true</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">return</span><span style="color:#24292e"> </span><span style="color:#005cc5">false</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><h5 id="设置剔除" tabindex="-1"><b>设置剔除</b> <a aria-current="page" href="/posts/unity/srp1#设置剔除" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>设置剔除</b>&quot;"><!--[-->​<!--]--></a></h5><p>其实上面的代码部分已经包括了这个部分</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">bool</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">()</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(camera.</span><span style="color:#b392f0">TryGetCullingParameters</span><span style="color:#e1e4e8">(out ScriptableCullingParameters p))</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            cullingResults </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> context.</span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">(ref p);</span></span>
+<span class="line"><span style="color:#e1e4e8">            </span><span style="color:#f97583">return</span><span style="color:#e1e4e8"> </span><span style="color:#79b8ff">true</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">return</span><span style="color:#e1e4e8"> </span><span style="color:#79b8ff">false</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">bool</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">()</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(camera.</span><span style="color:#6f42c1">TryGetCullingParameters</span><span style="color:#24292e">(out ScriptableCullingParameters p))</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            cullingResults </span><span style="color:#d73a49">=</span><span style="color:#24292e"> context.</span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">(ref p);</span></span>
+<span class="line"><span style="color:#24292e">            </span><span style="color:#d73a49">return</span><span style="color:#24292e"> </span><span style="color:#005cc5">true</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">return</span><span style="color:#24292e"> </span><span style="color:#005cc5">false</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><p>这个函数最后在主函数中调用就行</p><h5 id="渲染出没有阴影的几何体" tabindex="-1"><b>渲染出没有阴影的几何体</b> <a aria-current="page" href="/posts/unity/srp1#渲染出没有阴影的几何体" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>渲染出没有阴影的几何体</b>&quot;"><!--[-->​<!--]--></a></h5><p>这个部分还是接着上面的代码说明，在<code>DrawVsibleGeoMetry()</code>方法中进行了实现</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        var sortingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">SortingSettings</span><span style="color:#e1e4e8">(camera);</span></span>
+<span class="line"><span style="color:#e1e4e8">        var drawingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawingSettings</span><span style="color:#e1e4e8">(unlitShaderTagId, sortingSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">        var filteringSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">FilteringSettings</span><span style="color:#e1e4e8">(RenderQueueRange.all);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawSkybox</span><span style="color:#e1e4e8">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        var sortingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">SortingSettings</span><span style="color:#24292e">(camera);</span></span>
+<span class="line"><span style="color:#24292e">        var drawingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawingSettings</span><span style="color:#24292e">(unlitShaderTagId, sortingSettings);</span></span>
+<span class="line"><span style="color:#24292e">        var filteringSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">FilteringSettings</span><span style="color:#24292e">(RenderQueueRange.all);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawSkybox</span><span style="color:#24292e">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><p>我们先来看看其中的变量类型,他们分别对应了API中的如下内容：</p><blockquote><p><a target="_blank" rel="noreferrer" href="https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.SortingSettings-ctor.html"><!--[-->https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.SortingSettings-ctor.html<!--]--><!----></a><a target="_blank" rel="noreferrer" href="https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.DrawingSettings-ctor.html"><!--[-->https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.DrawingSettings-ctor.html<!--]--><!----></a><a target="_blank" rel="noreferrer" href="https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.FilteringSettings-ctor.html"><!--[-->https://docs.unity.cn/cn/2021.2/ScriptReference/Rendering.FilteringSettings-ctor.html<!--]--><!----></a></p></blockquote><p>他们三个都是构造函数，返回值成为了DrawRenderers()的参数，最终执行的是<code>DrawRenderers()</code>。 他们分别表示了：</p><ul><li>摄像机的透明排序设置。</li><li>材质的绘制设置，包含了需要用到哪些材质，介于材质会包含透明度混合，参数需要知道材质ID和透明排序</li><li>过滤图层蒙版的结构</li></ul><p>有了这些东西之后我们就能使用DrawRenderers来渲染物体了！</p><h5 id="绘制错误或旧版的着色器" tabindex="-1"><b>绘制错误或旧版的着色器</b> <a aria-current="page" href="/posts/unity/srp1#绘制错误或旧版的着色器" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>绘制错误或旧版的着色器</b>&quot;"><!--[-->​<!--]--></a></h5><p>在编辑器中，我们需要区分材质是否被正确支持，支持的材质需要高亮显示区分，或者是绘制默认着色器。 我们先来绘制旧版着色器</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">static</span><span style="color:#e1e4e8"> ShaderTagId[] legacySJaderTagIds </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span></span>
+<span class="line"><span style="color:#e1e4e8">   {</span></span>
+<span class="line"><span style="color:#e1e4e8">       </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"Always"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">       </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"ForwardBase"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">       </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"PrepassBase"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">       </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"Vertex"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">       </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"VertexLMRGBM"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">       </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"VertexLM"</span><span style="color:#e1e4e8">)</span></span>
+<span class="line"><span style="color:#e1e4e8">   };</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">static</span><span style="color:#24292e"> ShaderTagId[] legacySJaderTagIds </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span></span>
+<span class="line"><span style="color:#24292e">   {</span></span>
+<span class="line"><span style="color:#24292e">       </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"Always"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">       </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"ForwardBase"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">       </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"PrepassBase"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">       </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"Vertex"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">       </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"VertexLMRGBM"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">       </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"VertexLM"</span><span style="color:#24292e">)</span></span>
+<span class="line"><span style="color:#24292e">   };</span></span></code></pre><button class="collapse"></button></div><p>我们先建一个ShaderTagId类型的数组。把这些旧版Shader都包含进来。 然后我们新建一个ErrorMaterial类型变量用来存错误的着色器。</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">static</span><span style="color:#e1e4e8"> Material errorMaterial;</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">static</span><span style="color:#24292e"> Material errorMaterial;</span></span></code></pre><button class="collapse"></button></div><p>然后我们创建一个新的函数绘制这些几何体</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawUnSupportedShaders</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//绘制无效或错误的几何体</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(errorMaterial </span><span style="color:#f97583">==</span><span style="color:#e1e4e8"> null)</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            errorMaterial </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Material</span><span style="color:#e1e4e8">(Shader.</span><span style="color:#b392f0">Find</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"Hidden/InternalErrorShader"</span><span style="color:#e1e4e8">));</span></span>
+<span class="line"><span style="color:#e1e4e8">            </span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span><span style="color:#6a737d">//赋值 找到错误的着色器。</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span></span>
+<span class="line"><span style="color:#e1e4e8">        var drawingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawingSettings</span><span style="color:#e1e4e8">(legacySJaderTagIds[</span><span style="color:#79b8ff">0</span><span style="color:#e1e4e8">],</span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">SortingSettings</span><span style="color:#e1e4e8">(camera)){overrideMaterial </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> errorMaterial};</span><span style="color:#6a737d">//错误的材质显示</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">for</span><span style="color:#e1e4e8"> (</span><span style="color:#f97583">int</span><span style="color:#e1e4e8"> i </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#79b8ff">1</span><span style="color:#e1e4e8">; i </span><span style="color:#f97583">&lt;</span><span style="color:#e1e4e8"> legacySJaderTagIds.Length; i</span><span style="color:#f97583">++</span><span style="color:#e1e4e8">)</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            drawingSettings.</span><span style="color:#b392f0">SetShaderPassName</span><span style="color:#e1e4e8">(i,legacySJaderTagIds[i]);</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"><span style="color:#e1e4e8">        var filteringSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> FilteringSettings.defaultValue;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettings,ref filteringSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawUnSupportedShaders</span><span style="color:#24292e">()</span><span style="color:#6a737d">//绘制无效或错误的几何体</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(errorMaterial </span><span style="color:#d73a49">==</span><span style="color:#24292e"> null)</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            errorMaterial </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Material</span><span style="color:#24292e">(Shader.</span><span style="color:#6f42c1">Find</span><span style="color:#24292e">(</span><span style="color:#032f62">"Hidden/InternalErrorShader"</span><span style="color:#24292e">));</span></span>
+<span class="line"><span style="color:#24292e">            </span></span>
+<span class="line"><span style="color:#24292e">        }</span><span style="color:#6a737d">//赋值 找到错误的着色器。</span></span>
+<span class="line"><span style="color:#24292e">        </span></span>
+<span class="line"><span style="color:#24292e">        var drawingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawingSettings</span><span style="color:#24292e">(legacySJaderTagIds[</span><span style="color:#005cc5">0</span><span style="color:#24292e">],</span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">SortingSettings</span><span style="color:#24292e">(camera)){overrideMaterial </span><span style="color:#d73a49">=</span><span style="color:#24292e"> errorMaterial};</span><span style="color:#6a737d">//错误的材质显示</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">for</span><span style="color:#24292e"> (</span><span style="color:#d73a49">int</span><span style="color:#24292e"> i </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#005cc5">1</span><span style="color:#24292e">; i </span><span style="color:#d73a49">&lt;</span><span style="color:#24292e"> legacySJaderTagIds.Length; i</span><span style="color:#d73a49">++</span><span style="color:#24292e">)</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            drawingSettings.</span><span style="color:#6f42c1">SetShaderPassName</span><span style="color:#24292e">(i,legacySJaderTagIds[i]);</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"><span style="color:#24292e">        var filteringSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> FilteringSettings.defaultValue;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettings,ref filteringSettings);</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><p>我们先找到了用来表现错误材质的着色器，最后在DrawingSettings调用使用这个材质。为了绘制旧版的材质，我们循环了这个数组， 用SetShaderPassName,来绘制一个材质的多个通道。这使得我们使用默认管线着色器的对象得以被正确绘制出来，而不是藏起来了。 ，但是其实我们在DrawSetting中其实覆盖了这个错误材质，所以不受支持的材质仍然会显示为洋红色。</p><h5 id="gizmos" tabindex="-1"><b>Gizmos</b> <a aria-current="page" href="/posts/unity/srp1#gizmos" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>Gizmos</b>&quot;"><!--[-->​<!--]--></a></h5><p>绘制Gizmos是方便我们调试场景很重要的过程，当然这一步我们也需要在管道中完成。首先，我们的Gizmos应该只在Editor下显示。 为了方便调试，我们新建一个扩展类，partial class。</p><p>我们给CameraRender类前加上扩展类标志。<code>public partial class CameraRender</code>然后新建一个一样的扩展类。把<code>#if UNITY_EDITOR</code> 块写进去，最后吧我们只在编辑器中才渲染的部分照写过来。原来的那一部分删掉。</p><p>如下：</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEditor;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">partial </span><span style="color:#f97583">class</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">CameraRender</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"><span style="color:#e1e4e8">    partial </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawGizmos</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    partial </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawUnSupportedShaders</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">#if</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">UNITY_EDITOR</span><span style="color:#6a737d">//只在编辑器下显示</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    partial </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawUnSupportedShaders</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//绘制无效或错误的几何体</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(errorMaterial </span><span style="color:#f97583">==</span><span style="color:#e1e4e8"> null)</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            errorMaterial </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Material</span><span style="color:#e1e4e8">(Shader.</span><span style="color:#b392f0">Find</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"Hidden/InternalErrorShader"</span><span style="color:#e1e4e8">));</span></span>
+<span class="line"><span style="color:#e1e4e8">            </span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span></span>
+<span class="line"><span style="color:#e1e4e8">        var drawingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawingSettings</span><span style="color:#e1e4e8">(legacySJaderTagIds[</span><span style="color:#79b8ff">0</span><span style="color:#e1e4e8">],</span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">SortingSettings</span><span style="color:#e1e4e8">(camera)){overrideMaterial </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> errorMaterial};</span><span style="color:#6a737d">//错误的材质显示</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">for</span><span style="color:#e1e4e8"> (</span><span style="color:#f97583">int</span><span style="color:#e1e4e8"> i </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#79b8ff">1</span><span style="color:#e1e4e8">; i </span><span style="color:#f97583">&lt;</span><span style="color:#e1e4e8"> legacySJaderTagIds.Length; i</span><span style="color:#f97583">++</span><span style="color:#e1e4e8">)</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            drawingSettings.</span><span style="color:#b392f0">SetShaderPassName</span><span style="color:#e1e4e8">(i,legacySJaderTagIds[i]);</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"><span style="color:#e1e4e8">        var filteringSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> FilteringSettings.defaultValue;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettings,ref filteringSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> ShaderTagId[] legacySJaderTagIds </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"Always"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"ForwardBase"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"PrepassBase"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"Vertex"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"VertexLMRGBM"</span><span style="color:#e1e4e8">),</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"VertexLM"</span><span style="color:#e1e4e8">)</span></span>
+<span class="line"><span style="color:#e1e4e8">    };</span></span>
+<span class="line"><span style="color:#e1e4e8">    </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> Material errorMaterial;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">    partial </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawGizmos</span><span style="color:#e1e4e8">()</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(Handles.</span><span style="color:#b392f0">ShouldRenderGizmos</span><span style="color:#e1e4e8">())</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            context.</span><span style="color:#b392f0">DrawGizmos</span><span style="color:#e1e4e8">(camera,GizmoSubset.PreImageEffects);</span></span>
+<span class="line"><span style="color:#e1e4e8">            context.</span><span style="color:#b392f0">DrawGizmos</span><span style="color:#e1e4e8">(camera,GizmoSubset.PostImageEffects);</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#f97583">    #endif</span></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEditor;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">partial </span><span style="color:#d73a49">class</span><span style="color:#24292e"> </span><span style="color:#6f42c1">CameraRender</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"><span style="color:#24292e">    partial </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawGizmos</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    partial </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawUnSupportedShaders</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">#if</span><span style="color:#24292e"> </span><span style="color:#6f42c1">UNITY_EDITOR</span><span style="color:#6a737d">//只在编辑器下显示</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    partial </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawUnSupportedShaders</span><span style="color:#24292e">()</span><span style="color:#6a737d">//绘制无效或错误的几何体</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(errorMaterial </span><span style="color:#d73a49">==</span><span style="color:#24292e"> null)</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            errorMaterial </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Material</span><span style="color:#24292e">(Shader.</span><span style="color:#6f42c1">Find</span><span style="color:#24292e">(</span><span style="color:#032f62">"Hidden/InternalErrorShader"</span><span style="color:#24292e">));</span></span>
+<span class="line"><span style="color:#24292e">            </span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"><span style="color:#24292e">        </span></span>
+<span class="line"><span style="color:#24292e">        var drawingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawingSettings</span><span style="color:#24292e">(legacySJaderTagIds[</span><span style="color:#005cc5">0</span><span style="color:#24292e">],</span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">SortingSettings</span><span style="color:#24292e">(camera)){overrideMaterial </span><span style="color:#d73a49">=</span><span style="color:#24292e"> errorMaterial};</span><span style="color:#6a737d">//错误的材质显示</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">for</span><span style="color:#24292e"> (</span><span style="color:#d73a49">int</span><span style="color:#24292e"> i </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#005cc5">1</span><span style="color:#24292e">; i </span><span style="color:#d73a49">&lt;</span><span style="color:#24292e"> legacySJaderTagIds.Length; i</span><span style="color:#d73a49">++</span><span style="color:#24292e">)</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            drawingSettings.</span><span style="color:#6f42c1">SetShaderPassName</span><span style="color:#24292e">(i,legacySJaderTagIds[i]);</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"><span style="color:#24292e">        var filteringSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> FilteringSettings.defaultValue;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettings,ref filteringSettings);</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">static</span><span style="color:#24292e"> ShaderTagId[] legacySJaderTagIds </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"Always"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"ForwardBase"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"PrepassBase"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"Vertex"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"VertexLMRGBM"</span><span style="color:#24292e">),</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"VertexLM"</span><span style="color:#24292e">)</span></span>
+<span class="line"><span style="color:#24292e">    };</span></span>
+<span class="line"><span style="color:#24292e">    </span><span style="color:#d73a49">static</span><span style="color:#24292e"> Material errorMaterial;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">    partial </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawGizmos</span><span style="color:#24292e">()</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(Handles.</span><span style="color:#6f42c1">ShouldRenderGizmos</span><span style="color:#24292e">())</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            context.</span><span style="color:#6f42c1">DrawGizmos</span><span style="color:#24292e">(camera,GizmoSubset.PreImageEffects);</span></span>
+<span class="line"><span style="color:#24292e">            context.</span><span style="color:#6f42c1">DrawGizmos</span><span style="color:#24292e">(camera,GizmoSubset.PostImageEffects);</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#d73a49">    #endif</span></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><p>在我们的扩展类中，我们把绘制错误shader的步骤放了进来，并且加入了绘制Gizmos的代码; 这些步骤只会在编辑器中执行。 最后当然需要记得在主要的Render方法中调用他们。</p><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"><span style="color:#e1e4e8">    public </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#e1e4e8">    {</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.context </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> context;</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#79b8ff">this</span><span style="color:#e1e4e8">.camera </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(</span><span style="color:#f97583">!</span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">())</span><span style="color:#6a737d">//为真调用括号里的函数</span></span>
+<span class="line"><span style="color:#e1e4e8">        {</span></span>
+<span class="line"><span style="color:#e1e4e8">            </span><span style="color:#f97583">return</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Setup</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">DrawUnSupportedShaders</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">DrawGizmos</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">        </span><span style="color:#b392f0">Submit</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">    }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"><span style="color:#24292e">    public </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera camera)</span></span>
+<span class="line"><span style="color:#24292e">    {</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.context </span><span style="color:#d73a49">=</span><span style="color:#24292e"> context;</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#005cc5">this</span><span style="color:#24292e">.camera </span><span style="color:#d73a49">=</span><span style="color:#24292e"> camera;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#d73a49">if</span><span style="color:#24292e">(</span><span style="color:#d73a49">!</span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">())</span><span style="color:#6a737d">//为真调用括号里的函数</span></span>
+<span class="line"><span style="color:#24292e">        {</span></span>
+<span class="line"><span style="color:#24292e">            </span><span style="color:#d73a49">return</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Setup</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">DrawUnSupportedShaders</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">DrawGizmos</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">        </span><span style="color:#6f42c1">Submit</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">    }</span></span></code></pre><button class="collapse"></button></div><p>最后我们得到了如下效果</p><figure><img src="/images/SRP1/DrawGizmos.png" alt="" loading="lazy" decoding="async"></figure><h5 id="给场景打光" tabindex="-1"><b>给场景打光！</b> <a aria-current="page" href="/posts/unity/srp1#给场景打光" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>给场景打光！</b>&quot;"><!--[-->​<!--]--></a></h5><p>我们都知道，我们平常写Shader时会使用很多全局变量，如<code>_WorldSpaceLightPos0</code>等等，但是这些东西其实是从管线中的代码传递过来的。 我们要想使用这些变量，就需要提前在管线中通过<code>Shader.PropertyToID()</code>来定义。 首先假装为了方便管理，新建一个静态类专门用来放这些信息。</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine;</span></span>
+<span class="line"><span style="color:#f97583">using</span><span style="color:#e1e4e8"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">public </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">class</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderBindings</span></span>
+<span class="line"><span style="color:#e1e4e8">{</span></span>
+<span class="line"><span style="color:#e1e4e8">   </span><span style="color:#f97583">const</span><span style="color:#e1e4e8"> string kPerCameraShaderVariablesTag </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#9ecbff">"SetPerCameraShaderVariables"</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">   public </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">int</span><span style="color:#e1e4e8">  _CameraPos </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> Shader.</span><span style="color:#b392f0">PropertyToID</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"_CameraPos"</span><span style="color:#e1e4e8">);</span></span>
+<span class="line"><span style="color:#e1e4e8">   public </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">int</span><span style="color:#e1e4e8"> _LightColor </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> Shader.</span><span style="color:#b392f0">PropertyToID</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"_LightColor"</span><span style="color:#e1e4e8">);</span></span>
+<span class="line"><span style="color:#e1e4e8">   public </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">int</span><span style="color:#e1e4e8"> _LightDir </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> Shader.</span><span style="color:#b392f0">PropertyToID</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"_LightDir"</span><span style="color:#e1e4e8">);</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">   public </span><span style="color:#f97583">static</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">SetPerFrameShaderVariables</span><span style="color:#e1e4e8">(ScriptableRenderContext context,Camera camera)</span></span>
+<span class="line"><span style="color:#e1e4e8">   {</span></span>
+<span class="line"><span style="color:#e1e4e8">       </span></span>
+<span class="line"><span style="color:#e1e4e8">       camera.</span><span style="color:#b392f0">TryGetCullingParameters</span><span style="color:#e1e4e8">(out ScriptableCullingParameters p);</span></span>
+<span class="line"><span style="color:#e1e4e8">       CullingResults cullingResults </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> context.</span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">(ref p);</span></span>
+<span class="line"><span style="color:#e1e4e8">       var lights </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> cullingResults.visibleLights;</span></span>
+<span class="line"><span style="color:#e1e4e8">       CommandBuffer cmd </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> CommandBuffer{name </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> kPerCameraShaderVariablesTag};</span></span>
+<span class="line"><span style="color:#e1e4e8">       Vector4 CameraPosition </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Vector4</span><span style="color:#e1e4e8">(camera.transform.localPosition.x,camera.transform.localPosition.y,camera.transform.localPosition.z,</span><span style="color:#79b8ff">1.0</span><span style="color:#f97583">f</span><span style="color:#e1e4e8">);</span></span>
+<span class="line"><span style="color:#e1e4e8">       cmd.</span><span style="color:#b392f0">SetGlobalVector</span><span style="color:#e1e4e8">(_CameraPos,camera.transform.localToWorldMatrix </span><span style="color:#f97583">*</span><span style="color:#e1e4e8"> CameraPosition);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">       </span><span style="color:#b392f0">foreach</span><span style="color:#e1e4e8">(var light in lights)</span></span>
+<span class="line"><span style="color:#e1e4e8">       {</span></span>
+<span class="line"><span style="color:#e1e4e8">           </span><span style="color:#f97583">if</span><span style="color:#e1e4e8">(light.lightType </span><span style="color:#f97583">!=</span><span style="color:#e1e4e8"> LightType.Directional)</span></span>
+<span class="line"><span style="color:#e1e4e8">           </span><span style="color:#f97583">continue</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"><span style="color:#e1e4e8">           Vector4 pos </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> light.localToWorldMatrix.</span><span style="color:#b392f0">GetColumn</span><span style="color:#e1e4e8">(</span><span style="color:#79b8ff">2</span><span style="color:#e1e4e8">);</span></span>
+<span class="line"><span style="color:#e1e4e8">           Vector4 LightDirection </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Vector4</span><span style="color:#e1e4e8">(</span><span style="color:#f97583">-</span><span style="color:#e1e4e8">pos.x,</span><span style="color:#f97583">-</span><span style="color:#e1e4e8">pos.y,</span><span style="color:#f97583">-</span><span style="color:#e1e4e8">pos.z,</span><span style="color:#79b8ff">0</span><span style="color:#e1e4e8">);</span></span>
+<span class="line"><span style="color:#e1e4e8">           Color LightColor </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> light.finalColor;</span></span>
+<span class="line"><span style="color:#e1e4e8">           cmd.</span><span style="color:#b392f0">SetGlobalColor</span><span style="color:#e1e4e8">(_LightColor,LightColor);</span></span>
+<span class="line"><span style="color:#e1e4e8">           cmd.</span><span style="color:#b392f0">SetGlobalVector</span><span style="color:#e1e4e8">(_LightDir,LightDirection);</span></span>
+<span class="line"><span style="color:#e1e4e8">           </span><span style="color:#f97583">break</span><span style="color:#e1e4e8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">       }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">       context.</span><span style="color:#b392f0">ExecuteCommandBuffer</span><span style="color:#e1e4e8">(cmd);</span></span>
+<span class="line"><span style="color:#e1e4e8">       cmd.</span><span style="color:#b392f0">Clear</span><span style="color:#e1e4e8">();</span></span>
+<span class="line"><span style="color:#e1e4e8">   }</span></span>
+<span class="line"><span style="color:#e1e4e8">}</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> System.Collections.Generic;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine;</span></span>
+<span class="line"><span style="color:#d73a49">using</span><span style="color:#24292e"> UnityEngine.Rendering;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">public </span><span style="color:#d73a49">static</span><span style="color:#24292e"> </span><span style="color:#d73a49">class</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderBindings</span></span>
+<span class="line"><span style="color:#24292e">{</span></span>
+<span class="line"><span style="color:#24292e">   </span><span style="color:#d73a49">const</span><span style="color:#24292e"> string kPerCameraShaderVariablesTag </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#032f62">"SetPerCameraShaderVariables"</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">   public </span><span style="color:#d73a49">static</span><span style="color:#24292e"> </span><span style="color:#d73a49">int</span><span style="color:#24292e">  _CameraPos </span><span style="color:#d73a49">=</span><span style="color:#24292e"> Shader.</span><span style="color:#6f42c1">PropertyToID</span><span style="color:#24292e">(</span><span style="color:#032f62">"_CameraPos"</span><span style="color:#24292e">);</span></span>
+<span class="line"><span style="color:#24292e">   public </span><span style="color:#d73a49">static</span><span style="color:#24292e"> </span><span style="color:#d73a49">int</span><span style="color:#24292e"> _LightColor </span><span style="color:#d73a49">=</span><span style="color:#24292e"> Shader.</span><span style="color:#6f42c1">PropertyToID</span><span style="color:#24292e">(</span><span style="color:#032f62">"_LightColor"</span><span style="color:#24292e">);</span></span>
+<span class="line"><span style="color:#24292e">   public </span><span style="color:#d73a49">static</span><span style="color:#24292e"> </span><span style="color:#d73a49">int</span><span style="color:#24292e"> _LightDir </span><span style="color:#d73a49">=</span><span style="color:#24292e"> Shader.</span><span style="color:#6f42c1">PropertyToID</span><span style="color:#24292e">(</span><span style="color:#032f62">"_LightDir"</span><span style="color:#24292e">);</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">   public </span><span style="color:#d73a49">static</span><span style="color:#24292e"> </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">SetPerFrameShaderVariables</span><span style="color:#24292e">(ScriptableRenderContext context,Camera camera)</span></span>
+<span class="line"><span style="color:#24292e">   {</span></span>
+<span class="line"><span style="color:#24292e">       </span></span>
+<span class="line"><span style="color:#24292e">       camera.</span><span style="color:#6f42c1">TryGetCullingParameters</span><span style="color:#24292e">(out ScriptableCullingParameters p);</span></span>
+<span class="line"><span style="color:#24292e">       CullingResults cullingResults </span><span style="color:#d73a49">=</span><span style="color:#24292e"> context.</span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">(ref p);</span></span>
+<span class="line"><span style="color:#24292e">       var lights </span><span style="color:#d73a49">=</span><span style="color:#24292e"> cullingResults.visibleLights;</span></span>
+<span class="line"><span style="color:#24292e">       CommandBuffer cmd </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> CommandBuffer{name </span><span style="color:#d73a49">=</span><span style="color:#24292e"> kPerCameraShaderVariablesTag};</span></span>
+<span class="line"><span style="color:#24292e">       Vector4 CameraPosition </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Vector4</span><span style="color:#24292e">(camera.transform.localPosition.x,camera.transform.localPosition.y,camera.transform.localPosition.z,</span><span style="color:#005cc5">1.0</span><span style="color:#d73a49">f</span><span style="color:#24292e">);</span></span>
+<span class="line"><span style="color:#24292e">       cmd.</span><span style="color:#6f42c1">SetGlobalVector</span><span style="color:#24292e">(_CameraPos,camera.transform.localToWorldMatrix </span><span style="color:#d73a49">*</span><span style="color:#24292e"> CameraPosition);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">       </span><span style="color:#6f42c1">foreach</span><span style="color:#24292e">(var light in lights)</span></span>
+<span class="line"><span style="color:#24292e">       {</span></span>
+<span class="line"><span style="color:#24292e">           </span><span style="color:#d73a49">if</span><span style="color:#24292e">(light.lightType </span><span style="color:#d73a49">!=</span><span style="color:#24292e"> LightType.Directional)</span></span>
+<span class="line"><span style="color:#24292e">           </span><span style="color:#d73a49">continue</span><span style="color:#24292e">;</span></span>
+<span class="line"><span style="color:#24292e">           Vector4 pos </span><span style="color:#d73a49">=</span><span style="color:#24292e"> light.localToWorldMatrix.</span><span style="color:#6f42c1">GetColumn</span><span style="color:#24292e">(</span><span style="color:#005cc5">2</span><span style="color:#24292e">);</span></span>
+<span class="line"><span style="color:#24292e">           Vector4 LightDirection </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Vector4</span><span style="color:#24292e">(</span><span style="color:#d73a49">-</span><span style="color:#24292e">pos.x,</span><span style="color:#d73a49">-</span><span style="color:#24292e">pos.y,</span><span style="color:#d73a49">-</span><span style="color:#24292e">pos.z,</span><span style="color:#005cc5">0</span><span style="color:#24292e">);</span></span>
+<span class="line"><span style="color:#24292e">           Color LightColor </span><span style="color:#d73a49">=</span><span style="color:#24292e"> light.finalColor;</span></span>
+<span class="line"><span style="color:#24292e">           cmd.</span><span style="color:#6f42c1">SetGlobalColor</span><span style="color:#24292e">(_LightColor,LightColor);</span></span>
+<span class="line"><span style="color:#24292e">           cmd.</span><span style="color:#6f42c1">SetGlobalVector</span><span style="color:#24292e">(_LightDir,LightDirection);</span></span>
+<span class="line"><span style="color:#24292e">           </span><span style="color:#d73a49">break</span><span style="color:#24292e">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">       }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">       context.</span><span style="color:#6f42c1">ExecuteCommandBuffer</span><span style="color:#24292e">(cmd);</span></span>
+<span class="line"><span style="color:#24292e">       cmd.</span><span style="color:#6f42c1">Clear</span><span style="color:#24292e">();</span></span>
+<span class="line"><span style="color:#24292e">   }</span></span>
+<span class="line"><span style="color:#24292e">}</span></span></code></pre><button class="collapse"></button></div><p>我们的类中包含有几个静态的变量，储存了各个Shader全局变量的ID,这些数据在我们之后使用<code>SetGlobalColor()</code> 的时候用到了，这个函数会根据这个ID和我们计算出的数据来写入命令缓冲区，最后一起调用。 函数<code>SetPerFrameShaderVariables()</code>计算了摄像机位置，获取了灯光参数，把它们写入了命令缓冲区。 最后调用缓冲区，然后释放。当这些都做完的时候，最后在Render方法中直接调用就行了。因为这是在单个摄像机中每帧产生 的数据，所以我们把它放在如下位置。</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">  protected override </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#e1e4e8">  {</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6a737d">      // 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span></span>
+<span class="line"><span style="color:#e1e4e8">      Debug.</span><span style="color:#b392f0">Log</span><span style="color:#e1e4e8">(renderPipelineAsset.exampleString);</span></span>
+<span class="line"><span style="color:#e1e4e8">      </span><span style="color:#b392f0">foreach</span><span style="color:#e1e4e8"> (Camera camera in cameras)</span></span>
+<span class="line"><span style="color:#e1e4e8">      {</span></span>
+<span class="line"><span style="color:#e1e4e8">          CullingResults cullingResults </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">Cull</span><span style="color:#e1e4e8">(context,camera);</span></span>
+<span class="line"><span style="color:#e1e4e8">          ShaderBindings.</span><span style="color:#b392f0">SetPerFrameShaderVariables</span><span style="color:#e1e4e8">(context,camera);</span><span style="color:#6a737d">//调用</span></span>
+<span class="line"><span style="color:#e1e4e8">          renderer.</span><span style="color:#b392f0">Render</span><span style="color:#e1e4e8">(context,camera);</span><span style="color:#6a737d">//循环每个摄像机 执行一次CameraRender.Render()</span></span>
+<span class="line"><span style="color:#e1e4e8">      }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#24292e">  protected override </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(ScriptableRenderContext context, Camera[] cameras)</span><span style="color:#6a737d">//在这里重写这个Render方法</span></span>
+<span class="line"><span style="color:#24292e">  {</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6a737d">      // 可以在此处编写自定义渲染代码。通过自定义此方法可以自定义 SRP。</span></span>
+<span class="line"><span style="color:#24292e">      Debug.</span><span style="color:#6f42c1">Log</span><span style="color:#24292e">(renderPipelineAsset.exampleString);</span></span>
+<span class="line"><span style="color:#24292e">      </span><span style="color:#6f42c1">foreach</span><span style="color:#24292e"> (Camera camera in cameras)</span></span>
+<span class="line"><span style="color:#24292e">      {</span></span>
+<span class="line"><span style="color:#24292e">          CullingResults cullingResults </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#6f42c1">Cull</span><span style="color:#24292e">(context,camera);</span></span>
+<span class="line"><span style="color:#24292e">          ShaderBindings.</span><span style="color:#6f42c1">SetPerFrameShaderVariables</span><span style="color:#24292e">(context,camera);</span><span style="color:#6a737d">//调用</span></span>
+<span class="line"><span style="color:#24292e">          renderer.</span><span style="color:#6f42c1">Render</span><span style="color:#24292e">(context,camera);</span><span style="color:#6a737d">//循环每个摄像机 执行一次CameraRender.Render()</span></span>
+<span class="line"><span style="color:#24292e">      }</span></span></code></pre><button class="collapse"></button></div><p>此时它就会逐帧的向Shader中提供数据了。但是实际上挂载了这个Shader的材质并不会被渲染，我们需要在CameraRender中把这个Shader 中设置的通道再画一次才行。 写过UnityShader的都知道，在Shader代码中会有这样一行代码<code>Tags {"LightMode" = "ForwardLit"}</code>这个东西其实就表示这个Shader 所使用的通道。还记得在CameraRender类中我们设置的<code>ShaderTagId unlitShaderTagId</code>这个代码么，它在DrawSetting中被调用了。 这说明要画出此Shader材质的几何体，就需要在这个材质Shader下Pass下的Tag中设置的Tag。把这个Tag包含进DrawSetting中，渲染器才会 把它们画出来。故修改如下代码</p><!----><div class="language-cpp"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki github-dark vp-code-dark"><code><span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">  </span><span style="color:#f97583">void</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawVsibleGeoMetry</span><span style="color:#e1e4e8">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#e1e4e8">  {</span></span>
+<span class="line"><span style="color:#e1e4e8">      var sortingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">SortingSettings</span><span style="color:#e1e4e8">(camera){criteria </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> SortingCriteria.CommonOpaque};</span></span>
+<span class="line"><span style="color:#e1e4e8">      var drawingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawingSettings</span><span style="color:#e1e4e8">(unlitShaderTagId, sortingSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">      var drawingSettingsFW </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">DrawingSettings</span><span style="color:#e1e4e8">(</span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">ShaderTagId</span><span style="color:#e1e4e8">(</span><span style="color:#9ecbff">"ForwardLit"</span><span style="color:#e1e4e8">), sortingSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">      var filteringSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> </span><span style="color:#f97583">new</span><span style="color:#e1e4e8"> </span><span style="color:#b392f0">FilteringSettings</span><span style="color:#e1e4e8">(RenderQueueRange.opaque);</span></span>
+<span class="line"><span style="color:#e1e4e8">      </span></span>
+<span class="line"><span style="color:#e1e4e8">      context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#e1e4e8">      context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettingsFW, ref filteringSettings);</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">      context.</span><span style="color:#b392f0">DrawSkybox</span><span style="color:#e1e4e8">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">      sortingSettings.criteria </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> SortingCriteria.CommonTransparent;</span></span>
+<span class="line"><span style="color:#e1e4e8">      drawingSettings.sortingSettings </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> sortingSettings;</span></span>
+<span class="line"><span style="color:#e1e4e8">      filteringSettings.renderQueueRange </span><span style="color:#f97583">=</span><span style="color:#e1e4e8"> RenderQueueRange.transparent;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#e1e4e8">      context.</span><span style="color:#b392f0">DrawRenderers</span><span style="color:#e1e4e8">(cullingResults,ref drawingSettings,ref filteringSettings);</span></span>
+<span class="line"><span style="color:#6a737d">      //透明物体与不透明物体分开绘制</span></span>
+<span class="line"><span style="color:#e1e4e8">  }</span></span></code></pre><pre class="shiki github-light vp-code-light"><code><span class="line"></span>
+<span class="line"><span style="color:#24292e">  </span><span style="color:#d73a49">void</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawVsibleGeoMetry</span><span style="color:#24292e">()</span><span style="color:#6a737d">//绘制几何体</span></span>
+<span class="line"><span style="color:#24292e">  {</span></span>
+<span class="line"><span style="color:#24292e">      var sortingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">SortingSettings</span><span style="color:#24292e">(camera){criteria </span><span style="color:#d73a49">=</span><span style="color:#24292e"> SortingCriteria.CommonOpaque};</span></span>
+<span class="line"><span style="color:#24292e">      var drawingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawingSettings</span><span style="color:#24292e">(unlitShaderTagId, sortingSettings);</span></span>
+<span class="line"><span style="color:#24292e">      var drawingSettingsFW </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">DrawingSettings</span><span style="color:#24292e">(</span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">ShaderTagId</span><span style="color:#24292e">(</span><span style="color:#032f62">"ForwardLit"</span><span style="color:#24292e">), sortingSettings);</span></span>
+<span class="line"><span style="color:#24292e">      var filteringSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> </span><span style="color:#d73a49">new</span><span style="color:#24292e"> </span><span style="color:#6f42c1">FilteringSettings</span><span style="color:#24292e">(RenderQueueRange.opaque);</span></span>
+<span class="line"><span style="color:#24292e">      </span></span>
+<span class="line"><span style="color:#24292e">      context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettings, ref filteringSettings);</span></span>
+<span class="line"><span style="color:#24292e">      context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettingsFW, ref filteringSettings);</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">      context.</span><span style="color:#6f42c1">DrawSkybox</span><span style="color:#24292e">(camera);</span><span style="color:#6a737d">//绘制天空盒 这只告诉了Unity是否应该绘制天空盒</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">      sortingSettings.criteria </span><span style="color:#d73a49">=</span><span style="color:#24292e"> SortingCriteria.CommonTransparent;</span></span>
+<span class="line"><span style="color:#24292e">      drawingSettings.sortingSettings </span><span style="color:#d73a49">=</span><span style="color:#24292e"> sortingSettings;</span></span>
+<span class="line"><span style="color:#24292e">      filteringSettings.renderQueueRange </span><span style="color:#d73a49">=</span><span style="color:#24292e"> RenderQueueRange.transparent;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292e">      context.</span><span style="color:#6f42c1">DrawRenderers</span><span style="color:#24292e">(cullingResults,ref drawingSettings,ref filteringSettings);</span></span>
+<span class="line"><span style="color:#6a737d">      //透明物体与不透明物体分开绘制</span></span>
+<span class="line"><span style="color:#24292e">  }</span></span></code></pre><button class="collapse"></button></div><p>我们再画一遍拥有这个通道ShaderPass的材质，切回编辑器，我们看一下。</p><figure><img src="/images/SRP1/LightDA.png" alt="" loading="lazy" decoding="async"></figure><p>我们现在已经画出了带有光照的几何体。并且在帧调试器中可以看到画这个几何体时使用的Pass和它包含的ShaderProperties。 到这里其实就已经完成了一个简单的自定义渲染管线了。</p><h4 id="结语" tabindex="-1"><b>结语</b> <a aria-current="page" href="/posts/unity/srp1#结语" class="router-link-active router-link-exact-active header-anchor" aria-label="Permalink to &quot;<b>结语</b>&quot;"><!--[-->​<!--]--></a></h4><p>通过一段时间的努力，我大概了解了SRP在渲染中到底起到了什么作用，上述内容必然会出现很多理解错误导致不对的地方。尽管 如此。也在逐步的探索中收获了很多。择个良辰吉日，我再回来继续搭建更完善的自定义管线。</p><figure><img src="/images/SRP1/ENDING.gif" alt="" loading="lazy" decoding="async"></figure><blockquote><p>Ref:</p><ul><li><a target="_blank" rel="noreferrer" href="https://zhuanlan.zhihu.com/p/35862626"><!--[-->https://zhuanlan.zhihu.com/p/35862626<!--]--><!----></a></li><li><a target="_blank" rel="noreferrer" href="https://catlikecoding.com/unity/tutorials/custom-srp/custom-render-pipeline/"><!--[-->https://catlikecoding.com/unity/tutorials/custom-srp/custom-render-pipeline/<!--]--><!----></a></li><li><a target="_blank" rel="noreferrer" href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.1/manual/index.html"><!--[-->https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.1/manual/index.html<!--]--><!----></a></li><li><a target="_blank" rel="noreferrer" href="https://github.com/phi-lira/CustomSRP"><!--[-->https://github.com/phi-lira/CustomSRP<!--]--><!----></a></li><li><a target="_blank" rel="noreferrer" href="https://docs.unity.cn/cn/2021.1/ScriptReference/index.html"><!--[-->https://docs.unity.cn/cn/2021.1/ScriptReference/index.html<!--]--><!----></a></li></ul></blockquote><!--]--><!--[--><!--]--><!--]--><!----><!----></article></template><!--]--><!--[--><!--[--><!--[--><!--v-if--><ul class="post-copyright" m="y-4"><li class="post-copyright-author"><strong>本文作者：</strong><span>MGCJの拖拉机</span></li><li class="post-copyright-link"><strong>本文链接：</strong><a href="http://yuzuha.space/posts/unity/srp1" target="_blank" title="本文链接">http://yuzuha.space/posts/unity/srp1</a></li><li class="post-copyright-license"><strong>版权声明：</strong><span>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 ">CC BY-NC-SA</a> 许可协议。</span></li></ul><!--]--><!--]--><!--]--></div><!--]--><!----></div><!--[--><!--]--><!--[--><div class="post-nav"><div class="post-nav-item"><a href="/posts/unity/unityshader/toonhightqulityskinshader" class="post-nav-prev" title="Unity实现高质量多通道阴影的皮肤渲染"><div class="icon" i-ri-arrow-left-s-line=""></div><span class="title truncate" text="sm">Unity实现高质量多通道阴影的皮肤渲染</span></a></div><div class="post-nav-item"><a href="/posts/houdini/pdglinkunity2" class="post-nav-next" title="PDG FORM UNITY2"><span class="title truncate" text="sm">PDG FORM UNITY2</span><div class="icon" i-ri-arrow-right-s-line=""></div></a></div></div><!--]--><!--[--><!--]--><!--[--><div class="yun-card flex-center rounded comment yun-comment sm:p-6 lg:px-12 xl:px-16" flex="col" min-h="100px" bg="$va-c-bg-light" w="full" p="4"><!----><!----><!--[--><!----><!--]--><!----></div><!--]--><!--[--><!--]--><footer class="va-footer p-4 text-$va-c-text-light" text="center sm"><!----><div class="copyright flex justify-center items-center gap-2" p="1"><span>©<!--[--> 2021 -<!--]--> 2024</span><a class="animate-pulse inline-flex" href="https://sponsors.yunyoujun.cn" target="_blank" title="Sponsor YunYouJun"><div class="i-ri-cloud-line"></div></a><span>MGCJの拖拉机</span></div><div class="powered" m="2"><span>由 <a href="https://github.com/YunYouJun/valaxy" target="_blank" rel="noopener">Valaxy</a> v0.16.3 驱动</span> | <span>主题 - <a href="https://github.com/YunYouJun/valaxy/tree/main/packages/valaxy-theme-yun" title="valaxy-theme-yun" target="_blank">Yun</a> v0.16.3</span></div><!--[--><!--]--></footer><!--[--><!--]--></div><!--]--><!--[--><!--[--><button class="xl:hidden toc-btn shadow fixed yun-icon-btn z-350" opacity="75" right="2" bottom="19"><div i-ri-file-list-line=""></div></button><!----><!--  --><aside class="va-card yun-aside" m="l-4" text="center" overflow="auto"><div class="aside-container" flex="~ col"><h2 m="t-6 b-2" font="serif black">文章目录</h2><div style="display:none" data-v-75b693dc=""><div class="content" data-v-75b693dc=""><div class="outline-title" data-v-75b693dc="">On this page</div><div class="outline-marker" data-v-75b693dc=""></div><nav aria-labelledby="doc-outline-aria-label" data-v-75b693dc=""><span id="doc-outline-aria-label" class="visually-hidden" data-v-75b693dc="">Table of Contents for current page</span><ul class="root va-toc relative z-1 css-i18n-toc" data-v-75b693dc="" data-v-699db71a=""><!--[--><!--]--></ul></nav></div></div><div class="flex-grow"></div><div class="custom-container"><!--[--><!--]--></div></div></aside><!--]--><!--]--></div></main><a href="#" class="back-to-top yun-icon-btn"><div w="8" h="8" i-ri-arrow-up-s-line=""></div><svg class="progress-circle-container" viewBox="0 0 100 100"><circle stroke-dasharray="301.59289474462014 301.59289474462014" stroke-dashoffset="301.59289474462014" class="progress-circle" cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></circle></svg></a><!--]--><!--]--></div><script>window.__INITIAL_STATE__='{"pinia":{"app":{"showLoading":true,"isSidebarOpen":false,"isRightSidebarOpen":false},"site":{}}}'</script></body></html>
