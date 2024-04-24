@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>柚叶的垃圾桶</title>
+        <link>http://yuzuha.space/</link>
+        <description>如果你是龙，也好</description>
+        <lastBuildDate>Wed, 24 Apr 2024 13:12:28 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <image>
+            <title>柚叶的垃圾桶</title>
+            <url>http://yuzuha.space/images/HeadImage.png</url>
+            <link>http://yuzuha.space/</link>
+        </image>
+        <copyright>CC BY-NC-SA 4.0 2024 © MGCJの拖拉机</copyright>
+        <atom:link href="http://yuzuha.space/feed.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Blender 渲染初探]]></title>
+            <link>http://yuzuha.space/posts/Blender/BlenderStart</link>
+            <guid>http://yuzuha.space/posts/Blender/BlenderStart</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<p>最近Blender更新了带有Cycles X的Alpha版本，所以乘此机会了解了一下Blender的用法，<br>
+粗略的制作了这张图。</p>
+<p><img src="http://yuzuha.space/images/BlenderStartTitle.png" alt=""></p>
+<blockquote>
+<p>Blender 是一款开源，跨平台，并且全能的三维动画制作软件，它提供了从概念绘画到建模，<br>
+到最终的渲染合成的全部解决方案，并且拥有非常活跃的社区生态。在未来有非常理想的生长<br>
+空间，这也是有必要去学习的一个很重要的理由。</p>
+</blockquote>
+<p><b>学习了主要包含：</b></p>
+<ul>
+<li>Blender的操作</li>
+<li>基本的模型建立</li>
+<li>基本的节点使用</li>
+<li>NPR的通常渲染方法</li>
+</ul>
+<hr>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[Houdini RBD使用笔记]]></title>
+            <link>http://yuzuha.space/posts/Houdini/HoudiniRBD</link>
+            <guid>http://yuzuha.space/posts/Houdini/HoudiniRBD</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<blockquote>
+<p><strong>这部分是关于OneNote中的笔记部分，由于经常进行更改和升级，现在慢慢同步到博客上</strong><font color=#c00000 style = "font-size: 14px;">此文章更新于2024.04.23</font></p>
+</blockquote>
+<h4>RBD与刚体动力学</h4>
+<hr>
+<p><strong>Houdini动力学的基本</strong></p>
+<ul>
+<li>动力学模拟具有模拟对象，解算器， 力场， 碰撞， 约束 这三个基本的元素</li>
+<li>Houdini动态模拟单位默认使用千克， 米， 秒 做为基本单位。</li>
+<li>跟据模拟的特性，我们可以把多个需要模拟的对象合并进数据流中一同模拟。</li>
+</ul>
+<p><strong>DopNetwork中基本的网格</strong></p>
+<p><img src="http://yuzuha.space/images/RBDHoudini/RBDOffNetwork.png" alt=""><em>官方展示的基本网格</em></p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[PDG FORM UNITY记录]]></title>
+            <link>http://yuzuha.space/posts/Houdini/PDGLInkUnity</link>
+            <guid>http://yuzuha.space/posts/Houdini/PDGLInkUnity</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<h3><b>Houdini PDG</b></h3>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1fb411E7No">参考教程</a><br>
+<a href="https://zhuanlan.zhihu.com/p/68868983">图文解析</a></p>
+</blockquote>
+<p>Houdini PDG 是在17.5版本中增加的一个流程管理模块，可以用此工具方便的进行分布<br>
+生成。在TOP网格中PDG可以直观的描述这些依赖关系，甚至可以分发到其他计算机同时<br>
+执行。能更灵活的自动化生产过程。</p>
+<blockquote>
+<p>在<a href="https://www.sidefx.com/learn/pipeline-pdg/">这里</a>可以看到更多的关于PDG的教程资料</p>
+</blockquote>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[PDG FORM UNITY2]]></title>
+            <link>http://yuzuha.space/posts/Houdini/PDGLinkUnity2</link>
+            <guid>http://yuzuha.space/posts/Houdini/PDGLinkUnity2</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<h4><b>Houdini PDG PAGE2</b></h4>
+<p><b>继续<a href="http://yuzuha.space/posts/houdini/pdglinkunity">上次</a>的过程。</b></p>
+<p>这么久过去了中间也稍微做了些修改和完善。这里把之前的三个生成地形节点直接合并成了一个Terrain节点</p>
+<p><img src="http://yuzuha.space/images/PDGLinkUnity2/BaseTerrain.png" alt=""></p>
+<p>并且由于忘记了这个<font color=#AB0007 >地形大小为2的N次幂加一，直接把 ReSample 节点加上去了，导致怎末调都生成不出来</font></p>
+<hr>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[今天来认识五线谱！！]]></title>
+            <link>http://yuzuha.space/posts/Music/MusicalNotation</link>
+            <guid>http://yuzuha.space/posts/Music/MusicalNotation</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<p><meting-js
+	name="すずめ"
+	artist="RADWIMPS/十明"
+	url="\music\RADWIMPS,十明 - すずめ feat.十明.flac"
+	cover="https://p2.music.126.net/jHIFF-TBXfG3hbh4IOnudQ==/109951167911814845.jpg?param=130y130"
+    autoplay="true"
+    fixed="false"
+    theme="#C20C0C"
+    lrc="\music\susumei.lrc"
+    ><br>
+</meting-js></p>
+<h3>今天我们来学习一下怎么认识乐谱！！！</h3>
+<hr>
+<p><strong>OK!先简单的定个虚伪的小目标！ 如现在播放的这首歌，我找了一个谱，并且想把它弹出来，需要满足下面几个东西！</strong></p>
+<ul>
+<li>
+<ul>
+<li>[x] 基本的乐理知识</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>[x] 拥有一个键盘</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>[ ] 多练</li>
+</ul>
+</li>
+</ul>
+<p>因为早年间学过一点木管乐器，所以拥有基础的乐理知识。但由于年代久远，而且也是简谱居多，咱就压根不认识啥五线谱。</p>
+<p><strong>所以！</strong> 今天就来认识五线谱！！</p>
+<p>学习的步骤和之前一样，我还是去B站先找了个教程看了一下，如下两个：</p>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV11Z4y1t71Y/">https://www.bilibili.com/video/BV11Z4y1t71Y/</a></p>
+</blockquote>
+<ul>
+<li>第一个是分辨调号的</li>
+</ul>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1Rx411C7zd/">https://www.bilibili.com/video/BV1Rx411C7zd/</a></p>
+</blockquote>
+<ul>
+<li>第二个则是一个简单易懂的乐理教程</li>
+</ul>
+<hr>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[个人游戏Demo的开发日志 - 0]]></title>
+            <link>http://yuzuha.space/posts/MyGame/First</link>
+            <guid>http://yuzuha.space/posts/MyGame/First</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<h3><b>开始</b></h3>
+<hr>
+<p>最近以为自己的技术积累做了个大概了，然后就开始做起了自己小demo的练习，结果法线还是不够，基础不过关。最开始也没想太多，直接上了Unity2020.3<br>
+和HDRP的管线。很多插件包有问题不支持不说，对Unity和SRP也都了解的不深，别提写shader了。</p>
+<p>不过既然已经开始了，那也不能停下，自己比较头铁也不想换回URP，就这样慢慢做吧。 &quot;狗头&quot;</p>
+<hr>
+<h4><b>坑</b></h4>
+<p>先说一下踩到的坑吧，似乎都是一些版本坑，也没有找到合适的解决办法。</p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[个人游戏Demo的开发日志 - 2 "关于Untiy_Gaia的地形创建"]]></title>
+            <link>http://yuzuha.space/posts/MyGame/TWO_TerrainforGaia</link>
+            <guid>http://yuzuha.space/posts/MyGame/TWO_TerrainforGaia</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<p>前段时间状态不好加上很忙，这两天抽空搜集了一些资料。发现有人提到了Gaia这个地形插件，便下载下来体验了一下。<br>
+研究了一番出了下面的这个效果。</p>
+<p><img src="http://yuzuha.space/images/GameNote/1GaiaForUnity/Preview.png" alt=""></p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[Unity_SRP自定义渲染管线学习1]]></title>
+            <link>http://yuzuha.space/posts/Unity/SRP1</link>
+            <guid>http://yuzuha.space/posts/Unity/SRP1</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<h3><b>Unity使用SRP创建自定义渲染管线</b></h3>
+<p>最近有想法深入了解一下管线，所以就研究一下Unity的自定义渲染管线，也加深一下自己对<br>
+管线的理解。也提升下自己那么一丢丢的开发能力。</p>
+<p><b>此文章包括以下内容：</b></p>
+<blockquote>
+<ul>
+<li>什么是SRP可编程渲染管线</li>
+<li>创建一个简单的自定义渲染管线</li>
+</ul>
+</blockquote>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[这是一篇新文章]]></title>
+            <link>http://yuzuha.space/posts/开始/myFirstPage</link>
+            <guid>http://yuzuha.space/posts/开始/myFirstPage</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<h2><b>嘿 嘿 嘿 </b></h2>
+<p>从这里开始</p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[Unity实现高质量多通道阴影的皮肤渲染]]></title>
+            <link>http://yuzuha.space/posts/Unity/UnityShader/ToonHightQulitySkinShader</link>
+            <guid>http://yuzuha.space/posts/Unity/UnityShader/ToonHightQulitySkinShader</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<p>在早就发出来的Uniteetokyo2018的PDF中，米家介绍了他们之前在B站的mmd中的渲染技术，其中包括以下这些</p>
+<p><img src="http://yuzuha.space/images/ToonHightQulityDiffuseShadow/Meue.png" alt="Audits - Lighthouse"><em>Unitetokyo2018米哈游</em></p>
+<p><b>其中包括以下内容</b></p>
+<ul>
+<li>具有笔刷样式的渐变着色</li>
+<li>各向异性材质，折射模糊</li>
+<li>基于主灯光的边缘光</li>
+<li>PCSS算法的Shadow</li>
+<li>高质量描边</li>
+</ul>
+<p>目前暂且只研究到了前两个部分。后面的PCSS的内容在URP管线中实现感觉需要修改源码，因为还没有把URP研究明白，<br>
+所以等研究明白了再写(开发能力太弱)。</p>
+<p><b>先看看身上的效果吧</b></p>
+<p><img src="/images/ToonHightQulityDiffuseShadow/SkinPreview.png" alt="Audits - Lighthouse"><em>演示效果</em></p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[Unity角色卡通渲染]]></title>
+            <link>http://yuzuha.space/posts/Unity/UnityShader/UnityCharToonShaderPreview</link>
+            <guid>http://yuzuha.space/posts/Unity/UnityShader/UnityCharToonShaderPreview</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<h3><b>Unity Shader</b></h3>
+<p>近段时间，断断续续的研究了很多Shader,和计算机图形学相关的内容，在上个月些出了自己的第一个稍微能用点的卡通着色器。<br>
+先说功能。</p>
+<hr>
+<p>功能包括:</p>
+<ul>
+<li>主纹理颜色</li>
+<li>阴影颜色</li>
+<li>阴影范围</li>
+<li>Ramp控制的阴影</li>
+<li>阴影Smooth</li>
+<li>阴影的边缘噪波位移(笔刷感)</li>
+<li>头发基于位移贴图的各向异性高光</li>
+<li>NDC空间的外描边</li>
+<li>菲涅尔</li>
+<li>高光部分的Bloom大小</li>
+<li>头发的投影</li>
+</ul>
+<p><img src="http://yuzuha.space/images/UnityCharToonShader/ShaderUIPreview.png" alt=""></p>
+<p><font size=6>预览图 </font></p>
+<p><img src="/images/UnityCharToonShader/Preview.png#pic_left" alt=""></p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[Unity仿站双渲染—_PBR混合]]></title>
+            <link>http://yuzuha.space/posts/Unity/UnityShader/ZhanShuangRendringPBRMixer</link>
+            <guid>http://yuzuha.space/posts/Unity/UnityShader/ZhanShuangRendringPBRMixer</guid>
+            <pubDate>Wed, 24 Apr 2024 13:11:33 GMT</pubDate>
+            <content:encoded><![CDATA[<h5><b>Unity 关于“战双帕弥什”中的PBR混合</b></h5>
+<hr>
+<p>最近由于工作原因接触到了渲染这方面的东西，效果中需要实现到“战双帕弥什”中的卡通渲染混合了PBR这样类似的效果。故也忙里偷闲，写了这篇文章。</p>
+<p><img src="http://yuzuha.space/images/ZhanShuangPBRMixer/GamePreview.png" alt=""></p>
+<p>其实可以从这张图上看出来，人物武器上的金属和身上的金属有很明显的PBR效果。而且不只是金属PBR也体现在了人物服装的漫反射上，基本可以说是<br>
+在服装上高光，漫反射，和金属度都是PBR的渲染。</p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[博客升级至Valaxy框架]]></title>
+            <link>http://yuzuha.space/posts/hello-valaxy</link>
+            <guid>http://yuzuha.space/posts/hello-valaxy</guid>
+            <pubDate>Sat, 01 Apr 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<h3>Valaxy</h3>
+<p>去年大半年都没有写博客了，回来看的时候感觉博客上多多少少有些不完整的地方。</p>
+<p>后面看到了云游君搞了一个自己的博客框架，想着不想花太多时间迁移到别的博客上，就进行了一波升级！！</p>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+        <item>
+            <title><![CDATA[关于MarkDownd的一点点复杂的用法]]></title>
+            <link>http://yuzuha.space/posts/MarkDown/MarkDowmHelp</link>
+            <guid>http://yuzuha.space/posts/MarkDown/MarkDowmHelp</guid>
+            <pubDate>Sun, 16 May 2021 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<h2><b>MarkDown的用法和参考</b></h2>
+<blockquote>
+<p><a href="https://segmentfault.com/markdown#articleHeader9">帮助</a><br>
+<a href="https://www.runoob.com/markdown/md-tutorial.html">帮助2</a></p>
+</blockquote>
+<hr>
+<ul>
+<li>Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档。</li>
+<li>Markdown 语言在 2004 由约翰·格鲁伯（英语：John Gruber）创建。</li>
+<li>Markdown 编写的文档可以导出 HTML 、Word、图像、PDF、Epub 等多种格式的文档。</li>
+<li>Markdown 编写的文档后缀为 .md, .markdown。</li>
+</ul>
+]]></content:encoded>
+            <author>i@valaxy.site (MGCJの拖拉机)</author>
+        </item>
+    </channel>
+</rss>

@@ -1,0 +1,182 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "柚叶的垃圾桶",
+    "home_page_url": "http://yuzuha.space/",
+    "feed_url": "http://yuzuha.space/feed.json",
+    "description": "如果你是龙，也好",
+    "icon": "http://yuzuha.space/images/HeadImage.png",
+    "author": {
+        "name": "MGCJの拖拉机",
+        "url": "https://valaxy.site"
+    },
+    "items": [
+        {
+            "id": "",
+            "content_html": "<p>最近Blender更新了带有Cycles X的Alpha版本，所以乘此机会了解了一下Blender的用法，<br>\n粗略的制作了这张图。</p>\n<p><img src=\"http://yuzuha.space/images/BlenderStartTitle.png\" alt=\"\"></p>\n<blockquote>\n<p>Blender 是一款开源，跨平台，并且全能的三维动画制作软件，它提供了从概念绘画到建模，<br>\n到最终的渲染合成的全部解决方案，并且拥有非常活跃的社区生态。在未来有非常理想的生长<br>\n空间，这也是有必要去学习的一个很重要的理由。</p>\n</blockquote>\n<p><b>学习了主要包含：</b></p>\n<ul>\n<li>Blender的操作</li>\n<li>基本的模型建立</li>\n<li>基本的节点使用</li>\n<li>NPR的通常渲染方法</li>\n</ul>\n<hr>\n",
+            "url": "http://yuzuha.space/posts/Blender/BlenderStart",
+            "title": "Blender 渲染初探",
+            "date_modified": "2021-05-19T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<blockquote>\n<p><strong>这部分是关于OneNote中的笔记部分，由于经常进行更改和升级，现在慢慢同步到博客上</strong><font color=#c00000 style = \"font-size: 14px;\">此文章更新于2024.04.23</font></p>\n</blockquote>\n<h4>RBD与刚体动力学</h4>\n<hr>\n<p><strong>Houdini动力学的基本</strong></p>\n<ul>\n<li>动力学模拟具有模拟对象，解算器， 力场， 碰撞， 约束 这三个基本的元素</li>\n<li>Houdini动态模拟单位默认使用千克， 米， 秒 做为基本单位。</li>\n<li>跟据模拟的特性，我们可以把多个需要模拟的对象合并进数据流中一同模拟。</li>\n</ul>\n<p><strong>DopNetwork中基本的网格</strong></p>\n<p><img src=\"http://yuzuha.space/images/RBDHoudini/RBDOffNetwork.png\" alt=\"\"><em>官方展示的基本网格</em></p>\n",
+            "url": "http://yuzuha.space/posts/Houdini/HoudiniRBD",
+            "title": "Houdini RBD使用笔记",
+            "date_modified": "2024-04-30T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h3><b>Houdini PDG</b></h3>\n<blockquote>\n<p><a href=\"https://www.bilibili.com/video/BV1fb411E7No\">参考教程</a><br>\n<a href=\"https://zhuanlan.zhihu.com/p/68868983\">图文解析</a></p>\n</blockquote>\n<p>Houdini PDG 是在17.5版本中增加的一个流程管理模块，可以用此工具方便的进行分布<br>\n生成。在TOP网格中PDG可以直观的描述这些依赖关系，甚至可以分发到其他计算机同时<br>\n执行。能更灵活的自动化生产过程。</p>\n<blockquote>\n<p>在<a href=\"https://www.sidefx.com/learn/pipeline-pdg/\">这里</a>可以看到更多的关于PDG的教程资料</p>\n</blockquote>\n",
+            "url": "http://yuzuha.space/posts/Houdini/PDGLInkUnity",
+            "title": "PDG FORM UNITY记录",
+            "date_modified": "2021-05-26T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h4><b>Houdini PDG PAGE2</b></h4>\n<p><b>继续<a href=\"http://yuzuha.space/posts/houdini/pdglinkunity\">上次</a>的过程。</b></p>\n<p>这么久过去了中间也稍微做了些修改和完善。这里把之前的三个生成地形节点直接合并成了一个Terrain节点</p>\n<p><img src=\"http://yuzuha.space/images/PDGLinkUnity2/BaseTerrain.png\" alt=\"\"></p>\n<p>并且由于忘记了这个<font color=#AB0007 >地形大小为2的N次幂加一，直接把 ReSample 节点加上去了，导致怎末调都生成不出来</font></p>\n<hr>\n",
+            "url": "http://yuzuha.space/posts/Houdini/PDGLinkUnity2",
+            "title": "PDG FORM UNITY2",
+            "date_modified": "2021-11-10T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<p><meting-js\n\tname=\"すずめ\"\n\tartist=\"RADWIMPS/十明\"\n\turl=\"\\music\\RADWIMPS,十明 - すずめ feat.十明.flac\"\n\tcover=\"https://p2.music.126.net/jHIFF-TBXfG3hbh4IOnudQ==/109951167911814845.jpg?param=130y130\"\n    autoplay=\"true\"\n    fixed=\"false\"\n    theme=\"#C20C0C\"\n    lrc=\"\\music\\susumei.lrc\"\n    ><br>\n</meting-js></p>\n<h3>今天我们来学习一下怎么认识乐谱！！！</h3>\n<hr>\n<p><strong>OK!先简单的定个虚伪的小目标！ 如现在播放的这首歌，我找了一个谱，并且想把它弹出来，需要满足下面几个东西！</strong></p>\n<ul>\n<li>\n<ul>\n<li>[x] 基本的乐理知识</li>\n</ul>\n</li>\n<li>\n<ul>\n<li>[x] 拥有一个键盘</li>\n</ul>\n</li>\n<li>\n<ul>\n<li>[ ] 多练</li>\n</ul>\n</li>\n</ul>\n<p>因为早年间学过一点木管乐器，所以拥有基础的乐理知识。但由于年代久远，而且也是简谱居多，咱就压根不认识啥五线谱。</p>\n<p><strong>所以！</strong> 今天就来认识五线谱！！</p>\n<p>学习的步骤和之前一样，我还是去B站先找了个教程看了一下，如下两个：</p>\n<blockquote>\n<p><a href=\"https://www.bilibili.com/video/BV11Z4y1t71Y/\">https://www.bilibili.com/video/BV11Z4y1t71Y/</a></p>\n</blockquote>\n<ul>\n<li>第一个是分辨调号的</li>\n</ul>\n<blockquote>\n<p><a href=\"https://www.bilibili.com/video/BV1Rx411C7zd/\">https://www.bilibili.com/video/BV1Rx411C7zd/</a></p>\n</blockquote>\n<ul>\n<li>第二个则是一个简单易懂的乐理教程</li>\n</ul>\n<hr>\n",
+            "url": "http://yuzuha.space/posts/Music/MusicalNotation",
+            "title": "今天来认识五线谱！！",
+            "date_modified": "2023-04-09T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h3><b>开始</b></h3>\n<hr>\n<p>最近以为自己的技术积累做了个大概了，然后就开始做起了自己小demo的练习，结果法线还是不够，基础不过关。最开始也没想太多，直接上了Unity2020.3<br>\n和HDRP的管线。很多插件包有问题不支持不说，对Unity和SRP也都了解的不深，别提写shader了。</p>\n<p>不过既然已经开始了，那也不能停下，自己比较头铁也不想换回URP，就这样慢慢做吧。 &quot;狗头&quot;</p>\n<hr>\n<h4><b>坑</b></h4>\n<p>先说一下踩到的坑吧，似乎都是一些版本坑，也没有找到合适的解决办法。</p>\n",
+            "url": "http://yuzuha.space/posts/MyGame/First",
+            "title": "个人游戏Demo的开发日志 - 0",
+            "date_modified": "2021-06-18T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<p>前段时间状态不好加上很忙，这两天抽空搜集了一些资料。发现有人提到了Gaia这个地形插件，便下载下来体验了一下。<br>\n研究了一番出了下面的这个效果。</p>\n<p><img src=\"http://yuzuha.space/images/GameNote/1GaiaForUnity/Preview.png\" alt=\"\"></p>\n",
+            "url": "http://yuzuha.space/posts/MyGame/TWO_TerrainforGaia",
+            "title": "个人游戏Demo的开发日志 - 2 \"关于Untiy_Gaia的地形创建\"",
+            "date_modified": "2021-06-18T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h3><b>Unity使用SRP创建自定义渲染管线</b></h3>\n<p>最近有想法深入了解一下管线，所以就研究一下Unity的自定义渲染管线，也加深一下自己对<br>\n管线的理解。也提升下自己那么一丢丢的开发能力。</p>\n<p><b>此文章包括以下内容：</b></p>\n<blockquote>\n<ul>\n<li>什么是SRP可编程渲染管线</li>\n<li>创建一个简单的自定义渲染管线</li>\n</ul>\n</blockquote>\n",
+            "url": "http://yuzuha.space/posts/Unity/SRP1",
+            "title": "Unity_SRP自定义渲染管线学习1",
+            "date_modified": "2022-02-10T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h2><b>嘿 嘿 嘿 </b></h2>\n<p>从这里开始</p>\n",
+            "url": "http://yuzuha.space/posts/开始/myFirstPage",
+            "title": "这是一篇新文章",
+            "date_modified": "2021-05-13T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<p>在早就发出来的Uniteetokyo2018的PDF中，米家介绍了他们之前在B站的mmd中的渲染技术，其中包括以下这些</p>\n<p><img src=\"http://yuzuha.space/images/ToonHightQulityDiffuseShadow/Meue.png\" alt=\"Audits - Lighthouse\"><em>Unitetokyo2018米哈游</em></p>\n<p><b>其中包括以下内容</b></p>\n<ul>\n<li>具有笔刷样式的渐变着色</li>\n<li>各向异性材质，折射模糊</li>\n<li>基于主灯光的边缘光</li>\n<li>PCSS算法的Shadow</li>\n<li>高质量描边</li>\n</ul>\n<p>目前暂且只研究到了前两个部分。后面的PCSS的内容在URP管线中实现感觉需要修改源码，因为还没有把URP研究明白，<br>\n所以等研究明白了再写(开发能力太弱)。</p>\n<p><b>先看看身上的效果吧</b></p>\n<p><img src=\"/images/ToonHightQulityDiffuseShadow/SkinPreview.png\" alt=\"Audits - Lighthouse\"><em>演示效果</em></p>\n",
+            "url": "http://yuzuha.space/posts/Unity/UnityShader/ToonHightQulitySkinShader",
+            "title": "Unity实现高质量多通道阴影的皮肤渲染",
+            "date_modified": "2022-05-17T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h3><b>Unity Shader</b></h3>\n<p>近段时间，断断续续的研究了很多Shader,和计算机图形学相关的内容，在上个月些出了自己的第一个稍微能用点的卡通着色器。<br>\n先说功能。</p>\n<hr>\n<p>功能包括:</p>\n<ul>\n<li>主纹理颜色</li>\n<li>阴影颜色</li>\n<li>阴影范围</li>\n<li>Ramp控制的阴影</li>\n<li>阴影Smooth</li>\n<li>阴影的边缘噪波位移(笔刷感)</li>\n<li>头发基于位移贴图的各向异性高光</li>\n<li>NDC空间的外描边</li>\n<li>菲涅尔</li>\n<li>高光部分的Bloom大小</li>\n<li>头发的投影</li>\n</ul>\n<p><img src=\"http://yuzuha.space/images/UnityCharToonShader/ShaderUIPreview.png\" alt=\"\"></p>\n<p><font size=6>预览图 </font></p>\n<p><img src=\"/images/UnityCharToonShader/Preview.png#pic_left\" alt=\"\"></p>\n",
+            "url": "http://yuzuha.space/posts/Unity/UnityShader/UnityCharToonShaderPreview",
+            "title": "Unity角色卡通渲染",
+            "date_modified": "2022-06-07T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h5><b>Unity 关于“战双帕弥什”中的PBR混合</b></h5>\n<hr>\n<p>最近由于工作原因接触到了渲染这方面的东西，效果中需要实现到“战双帕弥什”中的卡通渲染混合了PBR这样类似的效果。故也忙里偷闲，写了这篇文章。</p>\n<p><img src=\"http://yuzuha.space/images/ZhanShuangPBRMixer/GamePreview.png\" alt=\"\"></p>\n<p>其实可以从这张图上看出来，人物武器上的金属和身上的金属有很明显的PBR效果。而且不只是金属PBR也体现在了人物服装的漫反射上，基本可以说是<br>\n在服装上高光，漫反射，和金属度都是PBR的渲染。</p>\n",
+            "url": "http://yuzuha.space/posts/Unity/UnityShader/ZhanShuangRendringPBRMixer",
+            "title": "Unity仿站双渲染—_PBR混合",
+            "date_modified": "2022-08-28T00:00:00.000Z",
+            "date_published": "2024-04-24T13:11:33.468Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h3>Valaxy</h3>\n<p>去年大半年都没有写博客了，回来看的时候感觉博客上多多少少有些不完整的地方。</p>\n<p>后面看到了云游君搞了一个自己的博客框架，想着不想花太多时间迁移到别的博客上，就进行了一波升级！！</p>\n",
+            "url": "http://yuzuha.space/posts/hello-valaxy",
+            "title": "博客升级至Valaxy框架",
+            "date_modified": "2023-04-01T00:00:00.000Z",
+            "date_published": "2023-04-01T00:00:00.000Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        },
+        {
+            "id": "",
+            "content_html": "<h2><b>MarkDown的用法和参考</b></h2>\n<blockquote>\n<p><a href=\"https://segmentfault.com/markdown#articleHeader9\">帮助</a><br>\n<a href=\"https://www.runoob.com/markdown/md-tutorial.html\">帮助2</a></p>\n</blockquote>\n<hr>\n<ul>\n<li>Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档。</li>\n<li>Markdown 语言在 2004 由约翰·格鲁伯（英语：John Gruber）创建。</li>\n<li>Markdown 编写的文档可以导出 HTML 、Word、图像、PDF、Epub 等多种格式的文档。</li>\n<li>Markdown 编写的文档后缀为 .md, .markdown。</li>\n</ul>\n",
+            "url": "http://yuzuha.space/posts/MarkDown/MarkDowmHelp",
+            "title": "关于MarkDownd的一点点复杂的用法",
+            "date_modified": "2021-05-14T00:00:00.000Z",
+            "date_published": "2021-05-16T00:00:00.000Z",
+            "author": {
+                "name": "MGCJの拖拉机",
+                "url": "https://valaxy.site"
+            }
+        }
+    ]
+}
